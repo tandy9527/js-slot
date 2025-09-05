@@ -1,4 +1,4 @@
-module js-slot
+module github.com/tandy9527/js-slot
 
 go 1.23.0
 
