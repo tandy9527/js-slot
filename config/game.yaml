@@ -1,0 +1,6 @@
+game:
+  game_code: "FortuneCat" # 游戏代码
+  game_name: "招财猫"    # 游戏名称
+  port: 8080          # 监听端口
+  room_max_users: 1 # 房间最大用户数
+  log_path: "logs/FortuneCat.log" #日志路径
