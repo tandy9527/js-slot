@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"js-slot/internal/core"
-	_ "js-slot/internal/games/fortuneCat"
-	"js-slot/internal/transport/ws"
-	logger "js-slot/pkg/logger"
 	"net/http"
+
+	"github.com/tandy9527/js-slot/core"
+	logger "github.com/tandy9527/js-slot/pkg/logger"
+	"github.com/tandy9527/js-slot/transport/ws"
 )
 
 func main() {

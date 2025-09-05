@@ -2,9 +2,10 @@ package core
 
 import (
 	"context"
-	"js-slot/pkg/logger"
 	"sync"
 	"time"
+
+	"github.com/tandy9527/js-slot/pkg/logger"
 
 	"github.com/redis/go-redis/v9"
 )

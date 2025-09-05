@@ -1,7 +1,7 @@
 package core
 
 import (
-	"js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/pkg/errs"
 )
 
 // Message represents a WebSocket message.

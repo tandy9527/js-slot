@@ -3,11 +3,13 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"js-slot/internal/core"
-	"js-slot/internal/core/game"
-	"js-slot/pkg/consts"
-	"js-slot/pkg/errs"
 	"strconv"
+
+	"github.com/tandy9527/js-slot/core"
+	"github.com/tandy9527/js-slot/pkg/consts"
+	"github.com/tandy9527/js-slot/pkg/errs"
+
+	"github.com/tandy9527/js-slot/core/game"
 
 	"net/http"
 

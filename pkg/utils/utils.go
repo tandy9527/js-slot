@@ -4,12 +4,13 @@ import (
 	crand "crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"js-slot/pkg/consts"
 	"math/rand"
 	"net/mail"
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/tandy9527/js-slot/pkg/consts"
 
 	"golang.org/x/crypto/bcrypt"
 )

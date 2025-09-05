@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"js-slot/internal/core"
-	"js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/core"
+	"github.com/tandy9527/js-slot/pkg/errs"
 )
 
 type BaseGameInterface interface {

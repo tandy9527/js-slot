@@ -1,8 +1,9 @@
 package game
 
 import (
-	"js-slot/internal/core"
 	"sync"
+
+	"github.com/tandy9527/js-slot/core"
 )
 
 type GameManager struct {

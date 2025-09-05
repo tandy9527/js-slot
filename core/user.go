@@ -1,11 +1,12 @@
 package core
 
 import (
-	"js-slot/pkg/errs"
-	"js-slot/pkg/scripts"
-	"js-slot/pkg/utils"
 	"sync"
 	"time"
+
+	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/pkg/scripts"
+	"github.com/tandy9527/js-slot/pkg/utils"
 )
 
 type User struct {

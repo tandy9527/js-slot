@@ -2,12 +2,13 @@ package core
 
 import (
 	"encoding/json"
-	"js-slot/pkg/consts"
-	"js-slot/pkg/errs"
-	"js-slot/pkg/logger"
-	"js-slot/pkg/utils"
 	"sync"
 	"time"
+
+	"github.com/tandy9527/js-slot/pkg/consts"
+	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/pkg/logger"
+	"github.com/tandy9527/js-slot/pkg/utils"
 
 	"github.com/gorilla/websocket"
 )
