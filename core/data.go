@@ -30,7 +30,10 @@ func BalanceChanges(data *BalanceChangeData) error {
 		return err
 	}
 	_, err = GetDB("db8").LPush(consts.REDIS_DATA_QUEUE_PENDING, bytes)
-	logger.Infof("PushDataRedis : %s", string(bytes))
+	if err != nil {
+
+	}
+	logger.Infof("BalanceChanges-> Push Data Redis : %s", string(bytes))
 	return err
 }
 
