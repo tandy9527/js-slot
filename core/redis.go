@@ -276,3 +276,41 @@ func (c *RedisClient) ExecLua(script string, keys []string, args ...any) (any, e
 		return lua.Run(ctx, c.rdb, keys, args...).Result()
 	})
 }
+
+// BRPopLPush 封装
+func (c *RedisClient) BRPopLPush(source, dest string, timeoutSeconds int, timeout ...time.Duration) (string, error) {
+	res, err := c.do(func(ctx context.Context) (any, error) {
+		// 这里使用 Redis 原生 BRPopLPush
+		return c.rdb.BRPopLPush(ctx, source, dest, time.Duration(timeoutSeconds)*time.Second).Result()
+	}, timeout...)
+	if err != nil {
+		return "", err
+	}
+
+	if str, ok := res.(string); ok {
+		return str, nil
+	}
+	return "", nil
+}
+
+// LRem 从 list 中删除指定的元素
+func (c *RedisClient) LRem(key string, count int64, value any, timeout ...time.Duration) (int64, error) {
+	result, err := c.do(func(ctx context.Context) (any, error) {
+		return c.rdb.LRem(ctx, key, count, value).Result()
+	}, timeout...)
+	if err != nil {
+		return 0, err
+	}
+	return result.(int64), nil
+}
+
+// LPush 将一个或多个值推入 list 左侧
+func (c *RedisClient) LPush(key string, values ...any) (int64, error) {
+	result, err := c.do(func(ctx context.Context) (any, error) {
+		return c.rdb.LPush(ctx, key, values...).Result()
+	})
+	if err != nil {
+		return 0, err
+	}
+	return result.(int64), nil
+}

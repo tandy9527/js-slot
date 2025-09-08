@@ -65,4 +65,10 @@ const (
 	REDIS_CONN_TOTAL = "conn:total"
 	// 游戏连接数
 	REDIS_GAME_TOTAL = "conn:game:"
+	//  待处理数据队列
+	REDIS_DATA_QUEUE_PENDING = "data_queue:pending"
+	//  正在处理的数据队列
+	REDIS_DATA_QUEUE_PROCESSING = "data_queue:processing"
+	//  处理失败的数据队列
+	REDIS_DATA_QUEUE_DEAD = "data_queue:dead"
 )
