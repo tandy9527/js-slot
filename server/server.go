@@ -71,7 +71,7 @@ func close() {
 }
 
 // Init 初始化配置
-func Init() {
+func init() {
 	core.LoadGameConf("config/game.yaml")
 	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
 	core.LoadRedis("config/redis.yaml")
