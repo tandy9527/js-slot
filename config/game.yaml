@@ -4,3 +4,4 @@ game:
   port: 8080          # 监听端口
   room_max_users: 1 # 房间最大用户数
   log_path: "logs/FortuneCat.log" #日志路径
+  router_name: "fc" #ws://localhost:8080/fc

@@ -57,7 +57,6 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// uidInt, _ := strconv.ParseInt(uid, 10, 64)
 	conn := core.New(wsConn)
-	core.Add(conn)
 	// 连接建立后，启动读写协程
 	go conn.ReadPump(onMessageHandler, onCloseHandler)
 	go conn.WritePump()
@@ -94,7 +93,17 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 			c.SendErr("", errs.ErrDataFormatError)
 			return
 		}
-		login(c, dataMap["token"].(string))
+		if val, ok := dataMap["token"]; ok {
+			token, ok := val.(string)
+			if ok {
+				login(c, token)
+			} else {
+				c.SendErr("", errs.ErrDataFormatError)
+			}
+
+		} else {
+			c.SendErr("", errs.ErrDataFormatError)
+		}
 		return
 	}
 	m.UID = c.UID
@@ -106,6 +115,7 @@ func login(c *core.Connection, token string) error {
 	uid, _ := strconv.ParseInt(token, 10, 64)
 
 	c.UID = uid
+	c.AddGlobalConnManager()
 	user := core.NewUser(uid, c)
 	room := core.NewRoom("room:1")
 	room.AddUser(user)
@@ -123,4 +133,5 @@ func login(c *core.Connection, token string) error {
 func onCloseHandler(c *core.Connection) {
 	// TODO
 	//logger.Infof("[onCloseHandler] User %d disconnected\n", c.UID)
+	c.OnClose()
 }

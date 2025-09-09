@@ -5,7 +5,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
 	"github.com/tandy9527/js-slot/pkg/logger"
 	"github.com/tandy9527/js-slot/pkg/utils"
@@ -20,19 +19,21 @@ type Connection struct {
 	Ws      *websocket.Conn
 	TraceID string // 方便出问题日志
 
-	sendChan chan []byte
-	mu       sync.Mutex
+	sendChan  chan []byte
+	mu        sync.Mutex
+	closed    bool
+	closeOnce sync.Once
 
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 	PingInterval time.Duration
 }
 
-// 所有连接
-var (
-	connections = make(map[int64]*Connection)
-	connMu      sync.RWMutex
-)
+// // 所有连接
+// var (
+// 	connections = make(map[int64]*Connection)
+// 	connMu      sync.RWMutex
+// )
 
 // NewConnection 新建连接
 func New(ws *websocket.Conn) *Connection {
@@ -53,49 +54,79 @@ func (c *Connection) NextSeq() {
 	c.SEQ++
 }
 
-// Add 注册连接
-func Add(c *Connection) {
-	connMu.Lock()
-	defer connMu.Unlock()
-	if connections[c.UID] == nil {
-		GetDB("db1").Incr(consts.REDIS_CONN_TOTAL)
-	}
-	connections[c.UID] = c
-}
+// // Add 注册连接
+// func Add(c *Connection) {
+// 	connMu.Lock()
+// 	defer connMu.Unlock()
+// 	if connections[c.UID] == nil {
+// 		GetDB("db1").Incr(consts.REDIS_CONN_TOTAL)
+// 	}
+// 	connections[c.UID] = c
+// }
 
-// Del 注销连接
-func Del(c *Connection) {
-	connMu.Lock()
-	defer connMu.Unlock()
-	if _, ok := connections[c.UID]; ok {
-		delete(connections, c.UID)
-		close(c.sendChan)
-		c.Ws.Close()
-		GetDB("db1").Decr(consts.REDIS_CONN_TOTAL)
-	}
-}
+// // Del 注销连接
+// func Del(c *Connection) {
+// 	connMu.Lock()
+// 	defer connMu.Unlock()
+// 	if _, ok := connections[c.UID]; ok {
+// 		delete(connections, c.UID)
+// 		close(c.sendChan)
+// 		c.Ws.Close()
+// 		GetDB("db1").Decr(consts.REDIS_CONN_TOTAL)
+// 	}
+// }
 
 // SendJSON 将消息推送到发送队列（非阻塞）
 func (c *Connection) SendJSON(v any) error {
+	if c.closed {
+		logger.Warn("[SendJSON] uid:%d closed", c.UID)
+		return errs.ErrConnClosed
+	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	b, err := json.Marshal(v)
 	if err != nil {
-		return err
+		logger.Error("[sendJson] uid:%d error: ", c.UID, err)
+		return errs.ErrDataFormatError
 	}
 
 	select {
 	case c.sendChan <- b:
 		return nil
 	default:
-		return nil // 可改成返回 error 或丢弃
+		return nil
 	}
 }
+
+// onClose
+func (c *Connection) OnClose() {
+	c.closeOnce.Do(func() {
+		logger.Info("closing connection uid :%d", c.UID)
+		c.closed = true
+		close(c.sendChan) // 停止写循环
+		_ = c.Ws.Close()  // 关闭 websocke
+		GlobalConnManager().Remove(c.UID)
+	})
+
+}
+
+func (c *Connection) AddGlobalConnManager() {
+	GlobalConnManager().Add(c)
+}
+
+// // CloseAll 关闭所有连接
+// func (c *Connection) CloseAll() {
+// 	c.mu.Lock()
+// 	defer c.mu.Unlock()
+// 	for uid, conn := range connections {
+// 		conn
+// 		delete(m.conns, uid)
+// 	}
+// }
 
 // ReadPump 读取消息
 func (c *Connection) ReadPump(onMessage func(c *Connection, msg []byte), onClose func(c *Connection)) {
 	defer func() {
-		Del(c)
 		onClose(c)
 	}()
 
@@ -150,36 +181,35 @@ func (c *Connection) WritePump() {
 	}
 }
 
-// SendToUser 直接给指定用户发送消息
-func SendToUser(uid int64, msg []byte) bool {
-	connMu.RLock()
-	conn, ok := connections[uid]
-	connMu.RUnlock()
-	if !ok {
-		return false
+// SendByte-异步
+func (c *Connection) SendByte(msg []byte) error {
+	if c.closed {
+		logger.Warn("[SendByte] uid:%d closed", c.UID)
+		return errs.ErrConnClosed
 	}
-
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	select {
-	case conn.sendChan <- msg:
-		return true
+	case c.sendChan <- msg:
+		return nil
 	default:
-		logger.Errorf("[SendToUser] User %d send queue full, message dropped", uid)
-		return false
+		logger.Errorf("[SendByte] User %d send queue full, message dropped", c.UID)
+		return nil
 	}
 }
 
 // Broadcast 广播给所有用户
-func Broadcast(msg []byte) {
-	connMu.RLock()
-	defer connMu.RUnlock()
-	for _, c := range connections {
-		select {
-		case c.sendChan <- msg:
-		default:
-			logger.Errorf("[Broadcast] User %d send queue full, message dropped", c.UID)
-		}
-	}
-}
+// func Broadcast(msg []byte) {
+// 	connMu.RLock()
+// 	defer connMu.RUnlock()
+// 	for _, c := range connections {
+// 		select {
+// 		case c.sendChan <- msg:
+// 		default:
+// 			logger.Errorf("[Broadcast] User %d send queue full, message dropped", c.UID)
+// 		}
+// 	}
+// }
 
 // sendResponse 发送成功消息
 func (c *Connection) SendResp(cmd string, data any) error {
@@ -191,10 +221,7 @@ func (c *Connection) SendResp(cmd string, data any) error {
 		Seq:   c.SEQ,
 		Trace: c.TraceID,
 	}
-	if err := c.SendJSON(resp); err != nil {
-		return err
-	}
-	return nil
+	return c.SendJSON(resp)
 }
 
 // sendError 发送错误消息
@@ -206,8 +233,5 @@ func (c *Connection) SendErr(cmd string, errs *errs.APIError) error {
 		Seq:   c.SEQ,
 		Trace: c.TraceID,
 	}
-	if err := c.SendJSON(resp); err != nil {
-		return err
-	}
-	return nil
+	return c.SendJSON(resp)
 }

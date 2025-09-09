@@ -21,6 +21,7 @@ const (
 	CmdNotFound         Code = 2005
 	Timeout             Code = 2006
 	DataFormatError     Code = 2007 // 数据格式有问题
+	ConnClosed          Code = 2008 // 连接已关闭
 )
 
 // 系统/服务模块

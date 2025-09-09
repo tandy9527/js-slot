@@ -2,7 +2,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/pkg/logger"
+	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-slot/transport/ws"
 )
 
@@ -19,6 +19,7 @@ var srv *http.Server
 
 // Start 启动游戏服务
 func Start() error {
+
 	port := fmt.Sprintf(":%d", core.GConf.Port)
 	logger.Infof("start server Game: %v , port: %d", core.GConf.GameCode, core.GConf.Port)
 
@@ -41,8 +42,12 @@ func Start() error {
 
 // setupRouter 配置路由
 func setupRouter() http.Handler {
+	router := core.GConf.RouterName
+	if utils.IsEmpty(router){
+		router="game"
+	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/game", ws.WsHandler)
+	mux.HandleFunc("/"+router, ws.WsHandler)
 	return mux
 }
 
@@ -51,30 +56,40 @@ func handleShutdown() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
-	<-quit
-	logger.Infof("shutdown signal received...")
-
-	// 给 5 秒时间处理完请求
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	if err := srv.Shutdown(ctx); err != nil {
-		logger.Errorf("server forced to shutdown: %v", err)
-	}
+	sig := <-quit
+	logger.Infof("shutdown signal received:%v", sig)
 
 	cleanup()
 
-	logger.Infof("server exited gracefully")
+	PrintShutdownLog(core.GConf.GameCode)
+	os.Exit(0)
 }
 
 // 清理资源
 func cleanup() {
+	logger.Info("cleaup")
 	core.CloseRedis()
+	core.GlobalConnManager().CloseAll()
 }
 
 // Init 初始化配置
 func init() {
 	core.LoadGameConf("config/game.yaml")
 	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
+	PrintStartupLog(core.GConf.GameCode)
 	core.LoadRedis("config/redis.yaml")
+}
+
+// PrintStartupLog 启动日志
+func PrintStartupLog(instanceID string) {
+	logger.Infof("=========================================================================")
+	logger.Infof(" GAME STARTED | ID: %s | TIME: %s", instanceID, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof("=========================================================================")
+}
+
+// PrintShutdownLog 退出日志
+func PrintShutdownLog(instanceID string) {
+	logger.Infof("=========================================================================")
+	logger.Infof(" GAME EXITED | ID: %s | TIME: %s", instanceID, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof("=========================================================================")
 }

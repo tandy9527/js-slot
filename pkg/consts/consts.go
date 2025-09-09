@@ -43,6 +43,8 @@ const (
 	USER_STATUS_LOCK = 1
 	//  正常
 	USER_STATUS_INACTIVE = 0
+	//  没有登陆
+	USER_STATUS_NOLOGIN = -1
 )
 
 //------------------------- Redis 相关----------------------------------------

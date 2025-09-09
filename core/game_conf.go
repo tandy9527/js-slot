@@ -13,6 +13,7 @@ type GameConf struct {
 	Port         int    `yaml:"port"`
 	RoomMaxUsers int    `yaml:"room_max_users"`
 	LogPath      string `yaml:"log_path"`
+	RouterName   string `yaml:"router_name"`
 }
 type GameConfig struct {
 	Game GameConf `yaml:"game"`
