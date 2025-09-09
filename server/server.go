@@ -62,11 +62,13 @@ func handleShutdown() {
 		logger.Errorf("server forced to shutdown: %v", err)
 	}
 
-	close()
+	cleanup()
 
 	logger.Infof("server exited gracefully")
 }
-func close() {
+
+// 清理资源
+func cleanup() {
 	core.CloseRedis()
 }
 
