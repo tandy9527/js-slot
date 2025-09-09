@@ -127,28 +127,11 @@ func Sync() {
 	}
 }
 
-// 简单封装
-func Info(args ...any) {
-	if sugar != nil {
-		sugar.Info(args...)
-	} else {
-		fmt.Println(args...)
-	}
-}
-
 func Infof(format string, args ...any) {
 	if sugar != nil {
 		sugar.WithOptions(zap.AddCallerSkip(1)).Infof(format, args...)
 	} else {
 		fmt.Printf(format+"\n", args...)
-	}
-}
-
-func Error(args ...any) {
-	if sugar != nil {
-		sugar.Error(args...)
-	} else {
-		fmt.Println(args...)
 	}
 }
 
@@ -159,11 +142,80 @@ func Errorf(format string, args ...any) {
 		fmt.Printf(format+"\n", args...)
 	}
 }
-
-func Debug(args ...any) {
+func Warnf(format string, args ...any) {
 	if sugar != nil {
-		sugar.Debug(args...)
+		sugar.WithOptions(zap.AddCallerSkip(1)).Warnf(format, args...)
 	} else {
-		fmt.Println(args...)
+		fmt.Printf(format+"\n", args...)
+	}
+}
+
+func Info(format string, args ...any) {
+	if coreLogger != nil {
+		var fields []zap.Field
+		var msgArgs []any
+		for _, a := range args {
+			if f, ok := a.(zap.Field); ok {
+				fields = append(fields, f)
+			} else {
+				msgArgs = append(msgArgs, a)
+			}
+		}
+		msg := fmt.Sprintf(format, msgArgs...)
+		coreLogger.WithOptions(zap.AddCallerSkip(1)).Info(msg, fields...)
+	} else {
+		fmt.Printf("[INFO] "+format+"\n", args...)
+	}
+}
+func Error(format string, args ...any) {
+	if coreLogger != nil {
+		var fields []zap.Field
+		var msgArgs []any
+		for _, a := range args {
+			if f, ok := a.(zap.Field); ok {
+				fields = append(fields, f)
+			} else {
+				msgArgs = append(msgArgs, a)
+			}
+		}
+		msg := fmt.Sprintf(format, msgArgs...)
+		coreLogger.WithOptions(zap.AddCallerSkip(1)).Error(msg, fields...)
+	} else {
+		fmt.Printf("[ERROR] "+format+"\n", args...)
+	}
+}
+func Warn(format string, args ...any) {
+	if coreLogger != nil {
+		var fields []zap.Field
+		var msgArgs []any
+		for _, a := range args {
+			if f, ok := a.(zap.Field); ok {
+				fields = append(fields, f)
+			} else {
+				msgArgs = append(msgArgs, a)
+			}
+		}
+		msg := fmt.Sprintf(format, msgArgs...)
+		coreLogger.WithOptions(zap.AddCallerSkip(1)).Warn(msg, fields...)
+	} else {
+		fmt.Printf("[WARN] "+format+"\n", args...)
+	}
+}
+
+func Debug(format string, args ...any) {
+	if coreLogger != nil {
+		var fields []zap.Field
+		var msgArgs []any
+		for _, a := range args {
+			if f, ok := a.(zap.Field); ok {
+				fields = append(fields, f)
+			} else {
+				msgArgs = append(msgArgs, a)
+			}
+		}
+		msg := fmt.Sprintf(format, msgArgs...)
+		coreLogger.WithOptions(zap.AddCallerSkip(1)).Debug(msg, fields...)
+	} else {
+		fmt.Printf("[DEBUG] "+format+"\n", args...)
 	}
 }
