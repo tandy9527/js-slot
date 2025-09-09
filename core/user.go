@@ -64,10 +64,10 @@ func (u *User) Bet(bet int64) *errs.APIError {
 
 	switch balance {
 	case -1: // 下注金额错误 下注金额等于或者小于0
-		u.Conn.SendErr("", errs.ErrWrongBetAmount)
+		//u.Conn.SendErr("", errs.ErrWrongBetAmount)
 		return errs.ErrWrongBetAmount
 	case -2: // 余额不足
-		u.Conn.SendErr("", errs.ErrInsufficientBalance)
+		//u.Conn.SendErr("", errs.ErrInsufficientBalance)
 		return errs.ErrInsufficientBalance
 	}
 	BalanceChanges(&BalanceChangeData{
