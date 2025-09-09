@@ -16,12 +16,13 @@ const (
 const (
 	GameNotFound        Code = 2001
 	SpinFailed          Code = 2002
-	InsufficientBalance Code = 2003
+	InsufficientBalance Code = 2003 //余额不足
 	BetOverLimit        Code = 2004
 	CmdNotFound         Code = 2005
 	Timeout             Code = 2006
 	DataFormatError     Code = 2007 // 数据格式有问题
 	ConnClosed          Code = 2008 // 连接已关闭
+	WrongBetAmount      Code = 2009 //下注金额错误
 )
 
 // 系统/服务模块

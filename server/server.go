@@ -21,7 +21,7 @@ var srv *http.Server
 func Start() error {
 
 	port := fmt.Sprintf(":%d", core.GConf.Port)
-	logger.Infof("start server Game: %v , port: %d", core.GConf.GameCode, core.GConf.Port)
+	logger.Infof("start server Game: %v , port: %d，router:%v", core.GConf.GameCode, core.GConf.Port, core.GConf.RouterName)
 
 	// 配置 HTTP Server
 	srv = &http.Server{
@@ -43,8 +43,8 @@ func Start() error {
 // setupRouter 配置路由
 func setupRouter() http.Handler {
 	router := core.GConf.RouterName
-	if utils.IsEmpty(router){
-		router="game"
+	if utils.IsEmpty(router) {
+		router = "game"
 	}
 	mux := http.NewServeMux()
 	mux.HandleFunc("/"+router, ws.WsHandler)

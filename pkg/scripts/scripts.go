@@ -6,3 +6,6 @@ import _ "embed"
 
 //go:embed recharge.lua
 var RechargeLua string
+
+//go:embed bet.lua
+var BetLua string

@@ -46,6 +46,10 @@ const (
 	//  没有登陆
 	USER_STATUS_NOLOGIN = -1
 )
+const (
+	TYPE_BET      = 1 // 下注
+	TYPE_GAME_END = 2 //游戏结算
+)
 
 //------------------------- Redis 相关----------------------------------------
 const (
