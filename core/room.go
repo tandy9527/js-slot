@@ -33,7 +33,8 @@ func (r *Room) AddUser(u *User) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.Users[u.UID] = u
-	u.CurrentRoom = r.ID
+	u.RoomID = r.ID
+	u.Room = r
 }
 
 func (r *Room) GetUser(uid int64) *User {
@@ -46,7 +47,8 @@ func (r *Room) RemoveUser(uid int64) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if u, ok := r.Users[uid]; ok {
-		u.CurrentRoom = ""
+		u.RoomID = ""
+		u.Room = nil
 		delete(r.Users, uid)
 	}
 }

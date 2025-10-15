@@ -16,10 +16,11 @@ type User struct {
 	Conn        *Connection
 	Balance     int64
 	CurrentGame string
-	CurrentRoom string
+	RoomID      string
 	LastActive  time.Time
 	mu          sync.Mutex
 	Session     string
+	Room        *Room
 }
 
 func NewUser(uid int64, conn *Connection) *User {

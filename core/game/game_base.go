@@ -13,6 +13,10 @@ func NewBaseGame(id, name string) *BaseGame {
 func (b *BaseGame) GetID() string   { return b.GameID }
 func (b *BaseGame) GetName() string { return b.GameName }
 
-func Spin() {
-
+type Game interface {
+	GetID() string
+	GetName() string
+	// 获取游戏配置
+	GetGameInfo() *GameInfo
+	Spin()
 }
