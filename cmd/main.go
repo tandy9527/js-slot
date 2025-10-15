@@ -1,6 +1,10 @@
 package main
 
-import "github.com/tandy9527/js-slot/server"
+import (
+	"fmt"
+
+	"github.com/tandy9527/js-slot/core/game"
+)
 
 func main() {
 	//game.GlobalManager()
@@ -17,7 +21,10 @@ func main() {
 	// if err := http.ListenAndServe(port, nil); err != nil {
 	// 	logger.Errorf("server error: %v", err)
 	// }
-	server.Start()
+	// server.Start()
+	game.LoadGameConfig("config/slot_params.yaml")
+	fmt.Println(game.GetGameInfo().GetIntSliceMap("reel_info", "MG", "reel_symbol")["1"][0])
+	fmt.Println(game.GetGameInfo().GetBool("test"))
 }
 
 // func init() {

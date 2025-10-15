@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/tandy9527/js-slot/core"
+	"github.com/tandy9527/js-slot/core/game"
 
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-slot/transport/ws"
@@ -81,6 +82,8 @@ func init() {
 	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
 	PrintStartupLog(core.GConf.GameCode)
 	cache.LoadRedis("config/redis.yaml")
+
+	game.LoadGameConfig("config/slot_game_info.yaml")
 
 }
 
