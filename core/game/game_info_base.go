@@ -127,6 +127,7 @@ func (g *GameInfo) GetStringSlice(path ...string) []string {
 }
 
 // GetIntSlice 获取嵌套字段的整数数组
+// return []int
 func (g *GameInfo) GetIntSlice(path ...string) []int {
 	val := getNested(g.Extra, path...)
 	arr, ok := val.([]any)
@@ -144,6 +145,38 @@ func (g *GameInfo) GetIntSlice(path ...string) []int {
 		case float64: // YAML 默认解析数字为 float64
 			result = append(result, int(num))
 		}
+	}
+	return result
+}
+
+// return [][]int
+func (g *GameInfo) GetIntMatrix(path ...string) [][]int {
+	val := getNested(g.Extra, path...)
+	arr, ok := val.([]any)
+	if !ok {
+		return nil
+	}
+
+	result := make([][]int, 0, len(arr))
+	for _, item := range arr {
+		subArr, ok := item.([]any)
+		if !ok {
+			continue
+		}
+
+		row := make([]int, 0, len(subArr))
+		for _, v := range subArr {
+			switch num := v.(type) {
+			case int:
+				row = append(row, num)
+			case int64:
+				row = append(row, int(num))
+			case float64:
+				row = append(row, int(num)) // YAML 默认是 float64
+			}
+		}
+
+		result = append(result, row)
 	}
 	return result
 }
