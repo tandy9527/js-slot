@@ -1,19 +1,31 @@
 package core
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/tandy9527/js-slot/core/game"
+)
 
 type Room struct {
-	ID     string
-	Users  map[int64]*User
-	Status string // waiting / playing
-	mu     sync.RWMutex
+	ID       string
+	Users    map[int64]*User
+	Status   string // waiting / playing
+	mu       sync.RWMutex
+	gameInfo *game.GameInfo //  数值配置
+}
+
+func (r *Room) GetGameInfo() *game.GameInfo {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	return r.gameInfo
 }
 
 func NewRoom(id string) *Room {
 	return &Room{
-		ID:     id,
-		Users:  make(map[int64]*User),
-		Status: "waiting",
+		ID:       id,
+		Users:    make(map[int64]*User),
+		Status:   "waiting",
+		gameInfo: game.GetGameInfo(),
 	}
 }
 

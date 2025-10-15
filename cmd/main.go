@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/tandy9527/js-slot/server"
-)
+import "github.com/tandy9527/js-slot/server"
 
 func main() {
 	//game.GlobalManager()
@@ -20,7 +18,6 @@ func main() {
 	// 	logger.Errorf("server error: %v", err)
 	// }
 	server.Start()
-
 }
 
 // func init() {

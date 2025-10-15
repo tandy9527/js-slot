@@ -9,7 +9,8 @@ import (
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
 
-	"github.com/tandy9527/js-slot/core/game"
+	"github.com/tandy9527/js-slot/core/game/manager"
+	"github.com/tandy9527/js-slot/core/game/router"
 
 	"net/http"
 
@@ -107,11 +108,12 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 		return
 	}
 	m.UID = c.UID
-	game.Router.HandleMessage(c, m)
+	router.Router.HandleMessage(c, m)
 }
 
 func login(c *core.Connection, token string) error {
 	// TODO:  后面会改成各种鉴权方式
+	// GRPC 进行鉴权
 	uid, _ := strconv.ParseInt(token, 10, 64)
 
 	c.UID = uid
@@ -119,7 +121,7 @@ func login(c *core.Connection, token string) error {
 	user := core.NewUser(uid, c)
 	room := core.NewRoom("room:1")
 	room.AddUser(user)
-	manager := game.GetGameManager()
+	manager := manager.GetGameManager()
 	manager.AddUser(user)
 	manager.AddRoom(room)
 	c.SendJSON(core.Message{

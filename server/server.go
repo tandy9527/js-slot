@@ -10,9 +10,12 @@ import (
 	"time"
 
 	"github.com/tandy9527/js-slot/core"
-	"github.com/tandy9527/js-slot/pkg/logger"
+
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-slot/transport/ws"
+
+	"github.com/tandy9527/js-util/cache"
+	"github.com/tandy9527/js-util/logger"
 )
 
 var srv *http.Server
@@ -68,7 +71,7 @@ func handleShutdown() {
 // 清理资源
 func cleanup() {
 	logger.Info("cleaup")
-	core.CloseRedis()
+	cache.CloseRedis()
 	core.GlobalConnManager().CloseAll()
 }
 
@@ -77,7 +80,8 @@ func init() {
 	core.LoadGameConf("config/game.yaml")
 	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
 	PrintStartupLog(core.GConf.GameCode)
-	core.LoadRedis("config/redis.yaml")
+	cache.LoadRedis("config/redis.yaml")
+
 }
 
 // PrintStartupLog 启动日志
