@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/tandy9527/js-slot/pkg/logger"
+	"github.com/tandy9527/js-util/logger"
 	"gopkg.in/yaml.v3"
 )
 

@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tandy9527/js-slot/pkg/consts"
-	"github.com/tandy9527/js-slot/pkg/logger"
 	"github.com/tandy9527/js-util/cache"
+	"github.com/tandy9527/js-util/logger"
 )
 
 // 游戏数据结构--BalanceChangeData 余额变动

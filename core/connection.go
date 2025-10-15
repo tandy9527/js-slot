@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/tandy9527/js-slot/pkg/errs"
-	"github.com/tandy9527/js-slot/pkg/logger"
 	"github.com/tandy9527/js-slot/pkg/utils"
+	"github.com/tandy9527/js-util/logger"
 
 	"github.com/gorilla/websocket"
 )
