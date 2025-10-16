@@ -24,4 +24,6 @@ var (
 	ErrConnClosed          = &APIError{Code: ConnClosed, Msg: "connection closed"}                                               // 连接已关闭
 	ErrWrongBetAmount      = &APIError{Code: WrongBetAmount, Msg: "Wrong bet amount"}
 	ErrInsufficientBalance = &APIError{Code: InsufficientBalance, Msg: "insufficient balance"}
+	ErrUserNotFound        = &APIError{Code: UserNotFound, Msg: "user not found"} // 未找到用户
+	ErrPleaseLogIn         = &APIError{Code: PleaseLogIn, Msg: "please log in"}   // 请登陆
 )

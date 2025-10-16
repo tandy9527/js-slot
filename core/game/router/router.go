@@ -12,7 +12,10 @@ import (
 	"time"
 
 	"github.com/tandy9527/js-slot/core"
+	"github.com/tandy9527/js-slot/core/game"
+	"github.com/tandy9527/js-slot/core/game/manager"
 	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-util/logger"
 )
 
 type BaseGameInterface interface {
@@ -22,7 +25,10 @@ type BaseGameInterface interface {
 var Router = NewRouter(3 * time.Second)
 
 // GameHandlerFunc 异步处理消息
-type GameHandlerFunc func(ctx context.Context, msg core.Message) <-chan core.GameResult
+// user: 请求的用户
+// gameinfo: 游戏数值配置
+// msg: 请求的具体消息数据
+type GameHandlerFunc func(ctx context.Context, user *core.User, gameinfo *game.GameInfo, msg core.Message) <-chan core.GameResult
 
 type GameRouter struct {
 	// 所有命令处理器
@@ -47,7 +53,7 @@ func (g *GameRouter) GetHandler(cmd string) GameHandlerFunc {
 
 // WrapSyncHandler 将同步函数包装为异步处理
 func WrapSyncHandler(f func(core.Message) core.GameResult) GameHandlerFunc {
-	return func(ctx context.Context, msg core.Message) <-chan core.GameResult {
+	return func(ctx context.Context, user *core.User, gameinfo *game.GameInfo, msg core.Message) <-chan core.GameResult {
 		ch := make(chan core.GameResult, 1)
 		go func() {
 			defer func() {
@@ -93,8 +99,22 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 
 	ctx, cancel := context.WithTimeout(context.Background(), g.Timeout)
 	defer cancel()
-
-	resultCh := handler(ctx, msg)
+	manager := manager.GetGameManager()
+	if manager == nil {
+		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
+	}
+	user := manager.GetUser(msg.UID)
+	if user == nil {
+		logger.Errorf("cmd:%s user:%d not found", msg.Cmd, msg.UID)
+		return conn.SendErr(msg.Cmd, errs.ErrPleaseLogIn)
+	}
+	gameinfo := user.Room.GetGameInfo()
+	if gameinfo == nil {
+		logger.Errorf("cmd:%s gameinfo not found", msg.Cmd)
+		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
+	}
+	logger.Infof("req -> cmd:%s uid:%d,data:%+v", msg.Cmd, msg.UID, msg.Data)
+	resultCh := handler(ctx, user, gameinfo, msg)
 
 	select {
 	case <-ctx.Done():
@@ -103,6 +123,7 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		if res.Err != nil {
 			return conn.SendErr(msg.Cmd, res.Err)
 		}
+		logger.Infof("resp <-cmd:%s uid:%d,data:%+v", msg.Cmd, msg.UID, res.Data)
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
 }

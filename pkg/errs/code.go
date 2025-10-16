@@ -4,12 +4,14 @@ type Code int
 
 // 通用
 const (
+	Unknown             Code = 1
+	Internal            Code = 3
 	Success             Code = 200
 	InternalServerError Code = 500 // 服务器错误
-	Unknown             Code = 1
+	UserNotFound        Code = 501 // 用户不存在
+	PleaseLogIn         Code = 502 // 请登陆
 	ParamInvalid        Code = 400
 	MissingParameter    Code = 401 //  缺少参数
-	Internal            Code = 3
 )
 
 // 游戏模块
