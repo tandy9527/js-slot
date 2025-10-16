@@ -16,12 +16,14 @@ type IGame interface {
 var slotParams *SlotParams
 
 // slot 游戏数值配置
+// 可能有多份不同的数值
+// 每次room 会随机取一个
 type SlotParams struct {
 	GameInfo []GameInfo `yaml:"slotParams"`
 }
 
-// GameInfo 游戏数值相关信息
-// 根据数值重写新增相关结构体
+// GameInfo数值配置-> slot_game_info.yaml 文件名字需一致
+// 具体游戏根据数值配置自行配置
 type GameInfo struct {
 	GameID   string         `yaml:"game_id"`   // 游戏id -必须
 	GameName string         `yaml:"game_name"` // 游戏名称 -必须

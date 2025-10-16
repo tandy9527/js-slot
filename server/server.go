@@ -67,7 +67,7 @@ func handleShutdown() {
 
 	cleanup()
 
-	PrintShutdownLog(core.GConf.GameCode)
+	PrintShutdownLog()
 	os.Exit(0)
 }
 
@@ -82,7 +82,7 @@ func cleanup() {
 func init() {
 	core.LoadGameConf("config/game.yaml")
 	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
-	PrintStartupLog(core.GConf.GameCode)
+	PrintStartupLog()
 	cache.LoadRedis("config/redis.yaml")
 
 	game.LoadGameConfig("config/slot_game_info.yaml")
@@ -100,15 +100,15 @@ func cleanGame() {
 }
 
 // PrintStartupLog 启动日志
-func PrintStartupLog(instanceID string) {
+func PrintStartupLog() {
 	logger.Infof("=========================================================================")
-	logger.Infof(" GAME STARTED | ID: %s | TIME: %s", instanceID, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof(" GAME STARTED | ID: %d | NAME: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, time.Now().Format("2006-01-02 15:04:05"))
 	logger.Infof("=========================================================================")
 }
 
 // PrintShutdownLog 退出日志
-func PrintShutdownLog(instanceID string) {
+func PrintShutdownLog() {
 	logger.Infof("=========================================================================")
-	logger.Infof(" GAME EXITED | ID: %s | TIME: %s", instanceID, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof(" GAME EXITED | ID: %d | NAME: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, time.Now().Format("2006-01-02 15:04:05"))
 	logger.Infof("=========================================================================")
 }
