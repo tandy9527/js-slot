@@ -1,9 +1,11 @@
 package core
 
 import (
+	"strconv"
 	"sync"
 
 	"github.com/tandy9527/js-slot/pkg/consts"
+	"github.com/tandy9527/js-util/cache"
 )
 
 type ConnManager struct {
@@ -42,6 +44,8 @@ func (m *ConnManager) Add(conn *Connection) {
 		go func(c *Connection) {
 			c.OnClose()
 		}(old)
+	} else {
+		cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, 1, strconv.Itoa(GConf.GameID))
 	}
 }
 

@@ -49,7 +49,6 @@ func New(ws *websocket.Conn) *Connection {
 		WriteTimeout: 10 * time.Second,
 		PingInterval: 50 * time.Second,
 	}
-	cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, 1, strconv.Itoa(GConf.GameID))
 	return c
 }
 func (c *Connection) NextSeq() {
