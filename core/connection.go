@@ -2,11 +2,14 @@ package core
 
 import (
 	"encoding/json"
+	"strconv"
 	"sync"
 	"time"
 
+	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
 	"github.com/tandy9527/js-slot/pkg/utils"
+	"github.com/tandy9527/js-util/cache"
 	"github.com/tandy9527/js-util/logger"
 
 	"github.com/gorilla/websocket"
@@ -46,6 +49,7 @@ func New(ws *websocket.Conn) *Connection {
 		WriteTimeout: 10 * time.Second,
 		PingInterval: 50 * time.Second,
 	}
+	cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, 1, strconv.Itoa(GConf.GameID))
 	return c
 }
 func (c *Connection) NextSeq() {
@@ -106,6 +110,7 @@ func (c *Connection) OnClose() {
 		close(c.sendChan) // 停止写循环
 		_ = c.Ws.Close()  // 关闭 websocke
 		GlobalConnManager().Remove(c.UID)
+		cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, -1, strconv.Itoa(GConf.GameID))
 	})
 
 }
