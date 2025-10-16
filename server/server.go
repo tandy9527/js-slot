@@ -94,9 +94,9 @@ func init() {
 func cleanGame() {
 	logger.Info("clean game")
 	// 在线人数
-	cache.GetDB("db1").ZIncrBy(consts.REDIS_GAME_ONLINE, 0, strconv.Itoa(core.GConf.GameID))
+	cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, 0, strconv.Itoa(core.GConf.GameID))
 	// 游戏在线人
-	cache.GetDB("db1").Del(consts.REDIS_GAME_CONN)
+	cache.GetDB("db2").Del(consts.REDIS_GAME_CONN)
 }
 
 // PrintStartupLog 启动日志
