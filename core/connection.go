@@ -111,7 +111,7 @@ func (c *Connection) OnClose() {
 		_ = c.Ws.Close()  // 关闭 websocke
 		GlobalConnManager().Remove(c.UID)
 		cache.GetDB("db2").ExecLua(scripts.ZincrBy, []string{consts.REDIS_GAME_ONLINE, strconv.Itoa(GConf.GameID)}, -1)
-		cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, -1, strconv.Itoa(GConf.GameID))
+		// cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, -1, strconv.Itoa(GConf.GameID))
 	})
 
 }

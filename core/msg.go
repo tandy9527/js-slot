@@ -1,6 +1,9 @@
 package core
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/tandy9527/js-slot/pkg/errs"
 )
 
@@ -24,4 +27,77 @@ type RespMsg struct {
 type GameResult struct {
 	Data any            `json:"data,omitempty"`
 	Err  *errs.APIError `json:"err,omitempty"`
+}
+
+func (m *Message) GetMap() map[string]any {
+	if m == nil || m.Data == nil {
+		return nil
+	}
+	mp, ok := m.Data.(map[string]any)
+	if !ok {
+		return nil
+	}
+	return mp
+}
+
+func (m *Message) GetString(key string) string {
+	v := m.GetMap()[key]
+	switch val := v.(type) {
+	case string:
+		return val
+	case float64:
+		return fmt.Sprintf("%v", val)
+	case int:
+		return strconv.Itoa(val)
+	default:
+		return ""
+	}
+}
+
+func (m *Message) GetInt(key string) int {
+	v := m.GetMap()[key]
+	switch val := v.(type) {
+	case float64:
+		return int(val)
+	case int:
+		return val
+	case string:
+		i, _ := strconv.Atoi(val)
+		return i
+	default:
+		return 0
+	}
+}
+
+func (m *Message) GetBool(key string) bool {
+	v := m.GetMap()[key]
+	switch val := v.(type) {
+	case bool:
+		return val
+	case string:
+		return val == "true" || val == "1"
+	case float64:
+		return val != 0
+	default:
+		return false
+	}
+}
+
+func (m *Message) GetFloat64(key string) float64 {
+	v := m.GetMap()[key]
+	switch val := v.(type) {
+	case float64:
+		return val
+	case float32:
+		return float64(val)
+	case int:
+		return float64(val)
+	case int64:
+		return float64(val)
+	case string:
+		f, _ := strconv.ParseFloat(val, 64)
+		return f
+	default:
+		return 0
+	}
 }
