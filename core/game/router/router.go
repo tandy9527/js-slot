@@ -15,6 +15,7 @@ import (
 	"github.com/tandy9527/js-slot/core/game"
 	"github.com/tandy9527/js-slot/core/game/manager"
 	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-util/logger"
 )
 
@@ -92,11 +93,11 @@ func (g *GameRouter) Register(cmd string, handler GameHandlerFunc) {
 
 // HandleMessage  处理消息入口
 func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) error {
+	startTime := utils.StartTime()
 	handler, ok := g.handlers[msg.Cmd]
 	if !ok {
 		return conn.SendErr(msg.Cmd, errs.ErrCmdNotFound)
 	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), g.Timeout)
 	defer cancel()
 	manager := manager.GetGameManager()
@@ -123,7 +124,7 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		if res.Err != nil {
 			return conn.SendErr(msg.Cmd, res.Err)
 		}
-		logger.Infof("resp <-cmd:%s uid:%d,data:%+v", msg.Cmd, msg.UID, res.Data)
+		logger.Infof("resp <- cmd:[%s][%d]ms, uid:[%d],data:{%+v}", msg.Cmd, utils.RunTime(startTime), msg.UID, res.Data)
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
 }
