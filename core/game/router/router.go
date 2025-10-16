@@ -114,11 +114,12 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Errorf("cmd:%s gameinfo not found", msg.Cmd)
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
 	}
-	logger.Infof("req -> cmd:%s uid:%d,data:%+v", msg.Cmd, msg.UID, msg.Data)
+	logger.Infof("req -> cmd:[%s] uid:[%d],data:{%+v}", msg.Cmd, msg.UID, msg.Data)
 	resultCh := handler(ctx, user, gameinfo, msg)
 
 	select {
 	case <-ctx.Done():
+		logger.Errorf("resp <- cmd:[%s] timeout:[%v]ms", msg.Cmd, g.Timeout.Milliseconds())
 		return conn.SendErr(msg.Cmd, errs.ErrTimeout)
 	case res := <-resultCh:
 		if res.Err != nil {
