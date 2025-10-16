@@ -8,6 +8,7 @@ import (
 
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/pkg/scripts"
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-util/cache"
 	"github.com/tandy9527/js-util/logger"
@@ -109,6 +110,7 @@ func (c *Connection) OnClose() {
 		close(c.sendChan) // 停止写循环
 		_ = c.Ws.Close()  // 关闭 websocke
 		GlobalConnManager().Remove(c.UID)
+		cache.GetDB("db2").ExecLua(scripts.ZincrBy, []string{consts.REDIS_GAME_ONLINE, strconv.Itoa(GConf.GameID)}, -1)
 		cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, -1, strconv.Itoa(GConf.GameID))
 	})
 

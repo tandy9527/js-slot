@@ -9,3 +9,6 @@ var RechargeLua string
 
 //go:embed bet.lua
 var BetLua string
+
+//go:embed zincrby.lua
+var ZincrBy string
