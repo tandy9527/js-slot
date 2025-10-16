@@ -52,7 +52,7 @@ func (g *GameRouter) GetHandler(cmd string) GameHandlerFunc {
 }
 
 // WrapSyncHandler 将同步函数包装为异步处理
-func WrapSyncHandler(f func(core.Message) core.GameResult) GameHandlerFunc {
+func WrapSyncHandler(f func(*core.User, *game.GameInfo, core.Message) core.GameResult) GameHandlerFunc {
 	return func(ctx context.Context, user *core.User, gameinfo *game.GameInfo, msg core.Message) <-chan core.GameResult {
 		ch := make(chan core.GameResult, 1)
 		go func() {
@@ -69,7 +69,7 @@ func WrapSyncHandler(f func(core.Message) core.GameResult) GameHandlerFunc {
 				close(ch)
 			}()
 
-			res := f(msg)
+			res := f(user, gameinfo, msg)
 			// 在发送结果前尊重 ctx，避免在上游已取消时阻塞
 			select {
 			case <-ctx.Done():
