@@ -6,12 +6,14 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/core/game"
 
+	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-slot/transport/ws"
 
@@ -85,6 +87,16 @@ func init() {
 
 	game.LoadGameConfig("config/slot_game_info.yaml")
 
+	cleanGame()
+
+}
+
+func cleanGame() {
+	logger.Info("clean game")
+	// 在线人数
+	cache.GetDB("db1").ZIncrBy(consts.REDIS_GAME_ONLINE, 0, strconv.Itoa(core.GConf.GameID))
+	// 游戏在线人
+	cache.GetDB("db1").Del(consts.REDIS_GAME_CONN)
 }
 
 // PrintStartupLog 启动日志

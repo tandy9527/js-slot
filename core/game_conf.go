@@ -8,6 +8,7 @@ import (
 )
 
 type GameConf struct {
+	GameID       int    `yaml:"game_id"`
 	GameCode     string `yaml:"game_code"`
 	GameName     string `yaml:"game_name"`
 	Port         int    `yaml:"port"`

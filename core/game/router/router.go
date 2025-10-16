@@ -95,6 +95,7 @@ func (g *GameRouter) Register(cmd string, handler GameHandlerFunc) {
 func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) error {
 	startTime := utils.StartTime()
 	handler, ok := g.handlers[msg.Cmd]
+	logger.Infof("req -> cmd:[%s] uid:[%d],data:{%+v}", msg.Cmd, msg.UID, msg.Data)
 	if !ok {
 		return conn.SendErr(msg.Cmd, errs.ErrCmdNotFound)
 	}
@@ -114,7 +115,7 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Errorf("cmd:%s gameinfo not found", msg.Cmd)
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
 	}
-	logger.Infof("req -> cmd:[%s] uid:[%d],data:{%+v}", msg.Cmd, msg.UID, msg.Data)
+
 	resultCh := handler(ctx, user, gameinfo, msg)
 
 	select {

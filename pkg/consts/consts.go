@@ -77,4 +77,8 @@ const (
 	REDIS_DATA_QUEUE_PROCESSING = "data_queue:processing"
 	//  处理失败的数据队列
 	REDIS_DATA_QUEUE_DEAD = "data_queue:dead"
+	//  游戏在线人数统计
+	REDIS_GAME_ONLINE = "game:online"
+	//  游戏在线人数
+	REDIS_GAME_CONN = "game:conn:"
 )
