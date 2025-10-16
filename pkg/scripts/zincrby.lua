@@ -21,5 +21,5 @@ if score < 0 then
   score = 0
 end
 
-redis.call('ZINCRBY', key, score, member)
+redis.call('ZADD', key, score, member)
 return score
