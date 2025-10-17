@@ -22,13 +22,16 @@ func main() {
 	// 	logger.Errorf("server error: %v", err)
 	// }
 	// server.Start()
-	game.LoadGameConfig("config/slot_params.yaml")
-	fmt.Println(game.GetGameInfo().GetIntSliceMap("reel_info", "MG", "reel_symbol")["1"][0])
-	fmt.Println(game.GetGameInfo().GetBool("test"))
+	game.LoadGameSetting("config/game_setting.yaml")
+	fmt.Println(game.GSetting.GetString("test", "test2"))
+	game.LoadGameConfig("config/game_info.yaml")
+	fmt.Println(game.GetGameInfo().GetInt("MaxOdds"))
+	fmt.Println(game.GIS.GameInfos[0].GameID)
+	// fmt.Println(game.GSetting.GsStringSlice("test2", "test2"))
 }
 
 // func init() {
-// 	core.LoadGameConf("config/game.yaml")
+// 	core.LoadGameConf("config/game.yaml")go
 
 // 	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
 

@@ -25,7 +25,7 @@ func NewRoom(id string) *Room {
 		ID:       id,
 		Users:    make(map[int64]*User),
 		Status:   "waiting",
-		gameInfo: game.GetGameInfo(),
+		gameInfo: game.GetGameInfo().Cfg,
 	}
 }
 

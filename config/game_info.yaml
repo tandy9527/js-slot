@@ -1,10 +1,9 @@
-
-# slot_params.yaml
+# GameInfos.yaml
 # 游戏数值相关配置
-# 会根据slotParams读取不同游戏数值的配置，可能只有一份，可能有多份
+# 会根据GameInfos读取不同游戏数值的配置，可能只有一份，可能有多份
 # 不同游戏请根据数值提供的数值单独配置，然后生成对应的结构体
-#  注:  slotParams key 必须
-slotParams:
+#  注:  GameInfos key 必须
+GameInfos:
 - game_id: "DojoMeow"
   game_name: "DojoMeow"
   ProbId: "98"

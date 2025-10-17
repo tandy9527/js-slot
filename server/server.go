@@ -87,6 +87,8 @@ func init() {
 
 	game.LoadGameConfig("config/slot_game_info.yaml")
 
+	game.LoadGameSetting("config/slot_game_setting.yaml")
+
 	cleanGame()
 
 }
