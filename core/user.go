@@ -38,6 +38,7 @@ func NewUser(uid int64, conn *Connection) *User {
 func (u *User) SendResp(data any) {
 	u.mu.Lock()
 	defer u.mu.Unlock()
+	fmt.Println(data)
 	u.Conn.SendJSON(data)
 }
 
