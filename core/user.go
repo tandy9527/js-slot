@@ -86,7 +86,9 @@ func (u *User) Bet(bet int64) *errs.APIError {
 		GameCode:      GConf.GameCode,
 	})
 	u.Balance = balance
+	u.mu.Unlock()
 	u.BalanceChange()
+
 	return nil
 }
 
