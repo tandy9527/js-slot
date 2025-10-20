@@ -40,10 +40,12 @@ type GameRouter struct {
 }
 
 func NewRouter(timeout time.Duration) *GameRouter {
-	return &GameRouter{
+	gr := &GameRouter{
 		handlers: make(map[string]GameHandlerFunc),
 		Timeout:  timeout,
 	}
+	gr.Register(consts.REQ_CMD_GET_BALANCE, WrapSyncHandler(core.GetBalance))
+	return gr
 }
 func (g *GameRouter) GetHandler(cmd string) GameHandlerFunc {
 	handler, ok := g.handlers[cmd]
