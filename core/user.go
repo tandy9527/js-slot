@@ -96,6 +96,7 @@ func (u *User) BalanceChange() int64 {
 	if balanceStr, err := cache.GetDB("db0").HGet(u.Session, "balance"); err == nil {
 		u.Balance, _ = strconv.ParseInt(balanceStr, 10, 64)
 	}
+	fmt.Println(u.Balance)
 	u.SendResp(RespMsg{Cmd: consts.RESP_CMD_BALANCE_CHANGE, Data: u.Balance, Code: errs.ErrSuccess.Code, Msg: errs.ErrSuccess.Msg, Seq: u.Conn.SEQ, Trace: u.Conn.TraceID})
 	return u.Balance
 }
