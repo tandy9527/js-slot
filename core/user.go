@@ -11,6 +11,7 @@ import (
 	"github.com/tandy9527/js-slot/pkg/scripts"
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-util/cache"
+	"github.com/tandy9527/js-util/logger"
 )
 
 type User struct {
@@ -36,9 +37,7 @@ func NewUser(uid int64, conn *Connection) *User {
 }
 
 func (u *User) SendResp(data any) {
-	// u.mu.Lock()
-	// defer u.mu.Unlock()
-	fmt.Println(data)
+	logger.Infof("resp <- uid:[%d],data:{%+v}", u.UID, data)
 	u.Conn.SendJSON(data)
 }
 
@@ -96,7 +95,9 @@ func (u *User) BalanceChange() int64 {
 	if balanceStr, err := cache.GetDB("db0").HGet(u.Session, "balance"); err == nil {
 		u.Balance, _ = strconv.ParseInt(balanceStr, 10, 64)
 	}
-	fmt.Println(u.Balance)
-	u.SendResp(RespMsg{Cmd: consts.RESP_CMD_BALANCE_CHANGE, Data: u.Balance, Code: errs.ErrSuccess.Code, Msg: errs.ErrSuccess.Msg, Seq: u.Conn.SEQ, Trace: u.Conn.TraceID})
+	u.SendResp(RespMsg{
+		Cmd:  consts.RESP_CMD_BALANCE_CHANGE,
+		Data: map[string]any{"balance": u.Balance},
+	})
 	return u.Balance
 }

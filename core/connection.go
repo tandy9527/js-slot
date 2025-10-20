@@ -90,10 +90,10 @@ func (c *Connection) SendJSON(v any) error {
 	defer c.mu.Unlock()
 	b, err := json.Marshal(v)
 	if err != nil {
-		logger.Error("[sendJson] uid:%d error: ", c.UID, err)
+		logger.Errorf("resp <- uid:%d error: ", c.UID, err)
 		return errs.ErrDataFormatError
 	}
-
+	// logger.Infof("resp <- cmd:[%s] uid:[%d],data:{%+v}", v.(*RespMsg).Cmd, c.UID, v)
 	select {
 	case c.sendChan <- b:
 		return nil
