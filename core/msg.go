@@ -68,7 +68,20 @@ func (m *Message) GetInt(key string) int {
 		return 0
 	}
 }
-
+func (m *Message) GetInt64(key string) int64 {
+	v := m.GetMap()[key]
+	switch val := v.(type) {
+	case float64:
+		return int64(val)
+	case int:
+		return int64(val)
+	case string:
+		i, _ := strconv.ParseInt(val, 10, 64)
+		return i
+	default:
+		return 0
+	}
+}
 func (m *Message) GetBool(key string) bool {
 	v := m.GetMap()[key]
 	switch val := v.(type) {

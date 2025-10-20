@@ -14,6 +14,7 @@ import (
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/core/game"
 	"github.com/tandy9527/js-slot/core/game/manager"
+	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-util/logger"
@@ -115,7 +116,9 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Errorf("cmd:%s gameinfo not found", msg.Cmd)
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
 	}
-
+	if !bet(user, msg) {
+		return nil
+	}
 	resultCh := handler(ctx, user, gameinfo, msg)
 
 	select {
@@ -129,4 +132,16 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Infof("resp <- cmd:[%s][%d]ms, uid:[%d],data:{%+v}", msg.Cmd, utils.RunTime(startTime), msg.UID, res.Data)
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
+}
+
+// spin  统一下注处理
+func bet(user *core.User, msg core.Message) bool {
+	if msg.Cmd == consts.REQ_CMD_SPIN {
+		err := user.Bet(msg.GetInt64("bet"))
+		if err != nil {
+			user.Conn.SendErr(msg.Cmd, err)
+			return false
+		}
+	}
+	return true
 }
