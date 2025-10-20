@@ -1,6 +1,7 @@
 package core
 
 import (
+	"strconv"
 	"sync"
 	"time"
 
@@ -82,5 +83,17 @@ func (u *User) Bet(bet int64) *errs.APIError {
 		GameCode:      GConf.GameCode,
 	})
 	u.Balance = balance
+	u.BalanceChange()
 	return nil
+}
+
+// 余额有变动
+func (u *User) BalanceChange() int64 {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	if balanceStr, err := cache.GetDB("db0").HGet(u.Session, "balance"); err == nil {
+		u.Balance, _ = strconv.ParseInt(balanceStr, 10, 64)
+	}
+	u.SendResp(RespMsg{Cmd: consts.RESP_CMD_BALANCE_CHANGE, Data: u.Balance, Code: errs.ErrSuccess.Code, Msg: errs.ErrSuccess.Msg, Seq: u.Conn.SEQ, Trace: u.Conn.TraceID})
+	return u.Balance
 }
