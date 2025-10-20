@@ -126,3 +126,13 @@ func (u *User) BalanceChange() int64 {
 	})
 	return u.Balance
 }
+
+// 玩家余额
+func (u *User) GetBalance() int64 {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	if balanceStr, err := cache.GetDB("db0").HGet(u.Session, "balance"); err == nil {
+		u.Balance, _ = strconv.ParseInt(balanceStr, 10, 64)
+	}
+	return u.Balance
+}

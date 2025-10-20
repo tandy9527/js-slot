@@ -6,6 +6,6 @@ import (
 
 func GetBalance(user *User, gameinfo *game.GameInfo, msg Message) GameResult {
 	result := map[string]any{}
-	result["balance"] = user.Balance
+	result["balance"] = user.GetBalance()
 	return GameResult{Data: result}
 }
