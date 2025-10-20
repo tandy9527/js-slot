@@ -141,6 +141,8 @@ func bet(user *core.User, msg core.Message) bool {
 		if err != nil {
 			user.Conn.SendErr(msg.Cmd, err)
 			return false
+		} else {
+			user.BalanceChange()
 		}
 	}
 	return true
