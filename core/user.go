@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -11,7 +10,6 @@ import (
 	"github.com/tandy9527/js-slot/pkg/scripts"
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-util/cache"
-	"github.com/tandy9527/js-util/logger"
 )
 
 type User struct {
@@ -37,7 +35,6 @@ func NewUser(uid int64, conn *Connection) *User {
 }
 
 func (u *User) SendResp(data any) {
-	logger.Infof("resp <- uid:[%d],data:{%+v}", u.UID, data)
 	u.Conn.SendJSON(data)
 }
 
@@ -61,7 +58,6 @@ func (u *User) Bet(bet int64) *errs.APIError {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	result, err := cache.GetDB("db0").ExecLua(scripts.BetLua, []string{u.Session}, bet)
-	fmt.Println(result, err)
 	if err != nil {
 		return errs.ErrInternalServerError
 	}
