@@ -18,6 +18,7 @@ type BalanceChangeData struct {
 	BalanceAfter  int64  `json:"balance_after,omitempty"`  // 变化后余额
 	Type          int8   `json:"type,omitempty"`           // 1 下注 2 游戏结算
 	GameCode      string `json:"game_code,omitempty"`      // 游戏代码
+	GameID        int    `json:"game_id,omitempty"`        // 游戏ID
 	UUID          string `json:"uuid,omitempty"`           // UUID
 }
 

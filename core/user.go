@@ -80,6 +80,7 @@ func (u *User) Bet(bet int64) *errs.APIError {
 		BalanceBefore: balance + bet,
 		BalanceAfter:  balance,
 		GameCode:      GConf.GameCode,
+		GameID:        GConf.GameID,
 	})
 	u.Balance = balance
 	return nil
@@ -105,6 +106,7 @@ func (u *User) GameEnd(win int64) *errs.APIError {
 		Type:          consts.TYPE_GAME_END,
 		BalanceBefore: resSlice[1].(int64),
 		BalanceAfter:  resSlice[0].(int64),
+		GameID:        GConf.GameID,
 		GameCode:      GConf.GameCode,
 	})
 	//u.Balance = balance
