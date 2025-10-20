@@ -109,7 +109,7 @@ func (u *User) GameEnd(win int64) *errs.APIError {
 		GameID:        GConf.GameID,
 		GameCode:      GConf.GameCode,
 	})
-	//u.Balance = balance
+	u.Balance = resSlice[0].(int64)
 	return nil
 }
 
