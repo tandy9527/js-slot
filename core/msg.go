@@ -27,6 +27,7 @@ type RespMsg struct {
 type GameResult struct {
 	Data any            `json:"data,omitempty"`
 	Err  *errs.APIError `json:"err,omitempty"`
+	Win  int64          `json:"-"` // 赢多少,会根据该值去结算
 }
 
 func (m *Message) GetMap() map[string]any {

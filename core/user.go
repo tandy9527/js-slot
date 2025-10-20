@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -81,6 +82,32 @@ func (u *User) Bet(bet int64) *errs.APIError {
 		GameCode:      GConf.GameCode,
 	})
 	u.Balance = balance
+	return nil
+}
+
+func (u *User) GameEnd(win int64) *errs.APIError {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	result, err := cache.GetDB("db0").ExecLua(scripts.RechargeLua, []string{u.Session}, win)
+	if err != nil || result == nil {
+		return errs.ErrInternalServerError
+	}
+	resSlice := result.([]any)
+	if len(resSlice) != 2 {
+		return errs.ErrInternalServerError
+	}
+	fmt.Println(resSlice[0], resSlice[1])
+
+	BalanceChanges(&BalanceChangeData{
+		UID:           u.UID,
+		Time:          utils.CurrentTimestamp(),
+		Amount:        win,
+		Type:          consts.TYPE_GAME_END,
+		BalanceBefore: resSlice[1].(int64),
+		BalanceAfter:  resSlice[0].(int64),
+		GameCode:      GConf.GameCode,
+	})
+	//u.Balance = balance
 	return nil
 }
 

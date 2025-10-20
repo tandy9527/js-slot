@@ -20,9 +20,9 @@ import (
 	"github.com/tandy9527/js-util/logger"
 )
 
-type BaseGameInterface interface {
-	HandleMessage(conn *core.Connection, msg core.Message) error
-}
+// type BaseGameInterface interface {
+// 	HandleMessage(conn *core.Connection, msg core.Message) error
+// }
 
 var Router = NewRouter(3 * time.Second)
 
@@ -130,6 +130,10 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 			return conn.SendErr(msg.Cmd, res.Err)
 		}
 		logger.Infof("resp <- cmd:[%s][%d]ms, uid:[%d],data:{%+v}", msg.Cmd, utils.RunTime(startTime), msg.UID, res.Data)
+		//   去结算
+		if res.Win > 0 {
+			user.GameEnd(res.Win)
+		}
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
 }
