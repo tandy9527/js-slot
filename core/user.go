@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -60,6 +61,7 @@ func (u *User) Bet(bet int64) *errs.APIError {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	result, err := cache.GetDB("db0").ExecLua(scripts.BetLua, []string{u.Session}, bet)
+	fmt.Println(result, err)
 	if err != nil {
 		return errs.ErrInternalServerError
 	}
