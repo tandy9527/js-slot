@@ -4,7 +4,8 @@ import (
 	"github.com/tandy9527/js-util/tools"
 )
 
-var Getetting *GameSetting
+// 游戏设置配置
+var GS *GameSetting
 
 // GameSetting 游戏设置
 type GameSetting struct {
@@ -18,7 +19,7 @@ type GameSetting struct {
 }
 
 func LoadGameSetting(filePath string) {
-	Getetting = tools.Loadyaml[GameSetting](filePath)
+	GS = tools.Loadyaml[GameSetting](filePath)
 }
 
 // --------------------------为了操作时方便--------------------------

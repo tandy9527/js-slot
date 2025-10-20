@@ -7,10 +7,6 @@ import (
 	"github.com/tandy9527/js-util/tools"
 )
 
-type IGame interface {
-	GetGameInfo() any
-}
-
 var GIS *GameInfos
 
 // slot 游戏数值配置
