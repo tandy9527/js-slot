@@ -85,9 +85,9 @@ func init() {
 	PrintStartupLog()
 	cache.LoadRedis("config/redis.yaml")
 
-	game.LoadGameConfig("config/slot_game_info.yaml")
+	game.LoadGameConfig("config/game_info.yaml")
 
-	game.LoadGameSetting("config/slot_game_setting.yaml")
+	game.LoadGameSetting("config/game_setting.yaml")
 
 	cleanGame()
 
