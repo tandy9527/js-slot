@@ -1,7 +1,6 @@
 package core
 
 import (
-	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -23,6 +22,7 @@ type User struct {
 	mu          sync.Mutex
 	Session     string
 	Room        *Room
+	Extra       any // 游戏扩展信息，由每个游戏自己决定结构
 }
 
 func NewUser(uid int64, conn *Connection) *User {
@@ -97,8 +97,6 @@ func (u *User) GameEnd(win int64) *errs.APIError {
 	if len(resSlice) != 2 {
 		return errs.ErrInternalServerError
 	}
-	fmt.Println(resSlice[0], resSlice[1])
-
 	BalanceChanges(&BalanceChangeData{
 		UID:           u.UID,
 		Time:          utils.CurrentTimestamp(),
