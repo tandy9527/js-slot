@@ -1,7 +1,7 @@
 package core
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -22,17 +22,14 @@ type GameConfig struct {
 
 var GConf *GameConf
 
-func LoadGameConf(path string) error {
+func LoadGameConf(path string) {
 	file, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalf("read config file error: %v", err)
-		return err
+		panic(fmt.Sprintf("read config file error: %v", err))
 	}
 	var cfg GameConfig
 	if err := yaml.Unmarshal(file, &cfg); err != nil {
-		log.Fatalf("unmarshal config error: %v", err)
-		return err
+		panic(fmt.Sprintf("read config file error: %v", err))
 	}
 	GConf = &cfg.Game
-	return nil
 }

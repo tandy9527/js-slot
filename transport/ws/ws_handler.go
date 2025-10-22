@@ -8,6 +8,8 @@ import (
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-slot/pkg/utils"
+	"github.com/tandy9527/js-util/cache"
 
 	"github.com/tandy9527/js-slot/core/game/manager"
 	"github.com/tandy9527/js-slot/core/game/router"
@@ -111,10 +113,14 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 	router.Router.HandleMessage(c, m)
 }
 
-func login(c *core.Connection, token string) error {
+func login(c *core.Connection, token string) {
 	// TODO:  后面会改成各种鉴权方式
 	// GRPC 进行鉴权
 	uid, _ := strconv.ParseInt(token, 10, 64)
+	if ok, _ := cache.GetDB("db0").Exists(utils.GetUserRedisKey(uid)); !ok {
+		c.SendErr("", errs.ErrUserNotFound)
+		return
+	}
 
 	c.UID = uid
 	c.AddGlobalConnManager()
@@ -128,7 +134,6 @@ func login(c *core.Connection, token string) error {
 		Cmd:  "login",
 		Data: fmt.Sprintf("user %d login success", uid),
 	})
-	return nil
 }
 
 // onCloseHandler 连接关闭后的清理逻辑
