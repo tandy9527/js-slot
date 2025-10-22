@@ -9,6 +9,7 @@ package router
 
 import (
 	"context"
+	"runtime/debug"
 	"time"
 
 	"github.com/tandy9527/js-slot/core"
@@ -63,7 +64,7 @@ func WrapSyncHandler(f func(*core.User, *game.GameInfo, core.Message) core.GameR
 			defer func() {
 				if r := recover(); r != nil {
 					// 遇到 panic 时通过 channel 发送错误（若 ctx 已取消则放弃）
-					logger.Errorf("[panic recovered] %v", r)
+					logger.Errorf("[panic recovered] %v\n%s", r, debug.Stack())
 					select {
 					case <-ctx.Done():
 						// 上游已取消，不发送
