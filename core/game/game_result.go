@@ -1,18 +1,12 @@
 package game
 
-// ReelSymbol 轉輪帶
-type ReelSymbol []Symboler
-
-// GameSymbol 獎圖盤面
-type GameSymbol []ReelSymbol
-
 // TumbleResult 旋转一次盘面结果
 type TumbleResult struct {
-	TumbleSymbol GameSymbol `json:"TumbleSymbol"` // 盘面符号
-	LineSymbol   []Symboler `json:"LineSymbol"`   // 连线中奖符号      [0,0,0,1,0,0,0,0]  -表示下标3的连线，中奖符号为1
-	LineCount    []int      `json:"LineCount"`    // 连线中奖符号數量  [0,0,0,5,0,0,0,0]  -表示下标3的连线，中奖符号數量为5
-	LineWin      []uint64   `json:"LineWin"`      // 连线中奖金额      [0,0,0,500,0,0,0,0]-	表示下标3的连线，中奖金额为500
-	Win          uint64     `json:"Win"`          // 盘面总中奖
+	TumbleSymbol [][]int  `json:"TumbleSymbol"` // 盘面符号
+	LineSymbol   []int    `json:"LineSymbol"`   // 连线中奖符号      [0,0,0,1,0,0,0,0]  -表示下标3的连线，中奖符号为1
+	LineCount    []int    `json:"LineCount"`    // 连线中奖符号數量  [0,0,0,5,0,0,0,0]  -表示下标3的连线，中奖符号數量为5
+	LineWin      []uint64 `json:"LineWin"`      // 连线中奖金额      [0,0,0,500,0,0,0,0]-	表示下标3的连线，中奖金额为500
+	Win          uint64   `json:"Win"`          // 盘面总中奖
 }
 
 // MGResult 主遊戲結果
