@@ -23,8 +23,8 @@ type FGResult struct {
 }
 
 type SlotResult struct {
-	MGResult
-	FGResult
-	TotalBet uint64 `json:"-"`        // 總投注額
-	TotalWin uint64 `json:"TotalWin"` // 總贏分
+	MGResult MGResult `json:"MGResult"` // MAIN GAME
+	FGResult FGResult `json:"FGResult"` // FREE GAME
+	TotalBet uint64   `json:"-"`        // 總投注額
+	TotalWin uint64   `json:"TotalWin"` // 總贏分
 }
