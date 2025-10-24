@@ -10,21 +10,21 @@ type TumbleResult struct {
 }
 
 // MGResult 主遊戲結果
-type MGResult struct {
-	MGTumbleList []TumbleResult `json:"MGTumbleList"` // 主遊戲盤面列表
-	MainWin      uint64         `json:"MainWin"`      // 主遊戲贏分
+type MGResult[T any] struct {
+	MGTumbleList []T    `json:"MGTumbleList"` // 主遊戲盤面列表
+	MainWin      uint64 `json:"MainWin"`      // 主遊戲贏分
 }
 
 // FGResult 免費遊戲結果
-type FGResult struct {
-	FGTumbleList []TumbleResult `json:"FGTumbleList"` // 免費遊戲 Spin 結果列表
-	FreeWin      uint64         `json:"FreeWin"`      // 免費遊戲贏分
+type FGResult[T any] struct {
+	FGTumbleList []T    `json:"FGTumbleList"` // 免費遊戲 Spin 結果列表
+	FreeWin      uint64 `json:"FreeWin"`      // 免費遊戲贏分
 
 }
 
-type SlotResult struct {
-	MGResult MGResult `json:"MGResult"` // MAIN GAME
-	FGResult FGResult `json:"FGResult"` // FREE GAME
-	TotalBet uint64   `json:"-"`        // 總投注額
-	TotalWin uint64   `json:"TotalWin"` // 總贏分
+type SlotResult[T any] struct {
+	MGResult MGResult[T] `json:"MGResult"` // MAIN GAME
+	FGResult FGResult[T] `json:"FGResult"` // FREE GAME
+	TotalBet uint64      `json:"-"`        // 總投注額
+	TotalWin uint64      `json:"TotalWin"` // 總贏分
 }
