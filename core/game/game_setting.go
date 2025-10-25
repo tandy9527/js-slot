@@ -52,6 +52,11 @@ func (g *GameSetting) GetIntSlice(path ...string) []int {
 	return tools.GetNested[[]int](g.Extra, path...)
 }
 
+// GetFloatSlice 获取 ]float64
+func (g *GameSetting) GetFloatSlice(path ...string) []float64 {
+	return tools.GetNested[[]float64](g.Extra, path...)
+}
+
 // GetIntMatrix 获取 [][]int
 func (g *GameSetting) GetIntMatrix(path ...string) [][]int {
 	return tools.GetNested[[][]int](g.Extra, path...)
