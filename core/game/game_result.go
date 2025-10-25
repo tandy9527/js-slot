@@ -22,9 +22,9 @@ type FGResult[T any] struct {
 
 }
 
-type SlotResult[T any] struct {
-	MGResult MGResult[T] `json:"MGResult"` // MAIN GAME
-	FGResult FGResult[T] `json:"FGResult"` // FREE GAME
+type SlotResult[M any, F any] struct {
+	MGResult MGResult[M] `json:"MGResult"` // MAIN GAME
+	FGResult FGResult[F] `json:"FGResult"` // FREE GAME
 	TotalBet uint64      `json:"-"`        // 總投注額
 	TotalWin uint64      `json:"TotalWin"` // 總贏分
 }
