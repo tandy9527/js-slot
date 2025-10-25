@@ -25,6 +25,18 @@ type User struct {
 	Extra       any // 游戏扩展信息，由每个游戏自己决定结构
 }
 
+func GetExtra[T any](u *User) (T, bool) {
+	v, ok := u.Extra.(T)
+	if !ok {
+		var zero T
+		return zero, false
+	}
+	return v, true
+}
+
+func SetExtra[T any](u *User, extra T) {
+	u.Extra = extra
+}
 func NewUser(uid int64, conn *Connection) *User {
 	return &User{
 		UID:        uid,
