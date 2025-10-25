@@ -27,8 +27,8 @@ type User struct {
 
 func GetExtra[T any](u *User) (T, bool) {
 	v, ok := u.Extra.(T)
+	var zero T
 	if !ok {
-		var zero T
 		return zero, false
 	}
 	return v, true
