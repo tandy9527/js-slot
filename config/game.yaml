@@ -6,3 +6,4 @@ game:
   room_max_users: 1       # 房间最大用户数
   log_path: "logs/FortuneCat.log" #日志路径
   router_name: "fc" #ws://localhost:8080/fc
+  mode: "dev"             # dev:开发模式;test:测试模式;prod:生产模式
