@@ -57,7 +57,7 @@ func Persistent(data Data) error {
 		logger.Errorf("Persistent error: %v", err)
 		return err
 	}
-	logger.Infof("BalanceChanges-> Push Data Redis : %s", string(bytes))
+	logger.Infof("Persistent-> [%s] Push Data Redis : %s", data.Type, string(bytes))
 	return nil
 }
 
@@ -92,6 +92,6 @@ func SlotSpinRecord(uid int64, bet int64, win int64, balance int64, data any, ti
 	}
 	Persistent(Data{
 		Data: d,
-		Type: consts.DATA_PERSISTENT_TYPE_UPDATE,
+		Type: consts.DATA_PERSISTENT_TYPE_SPIN,
 	})
 }
