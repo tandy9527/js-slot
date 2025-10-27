@@ -136,13 +136,14 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		}
 		logger.Infof("resp <- cmd:[%s][%d]ms, uid:[%d],data:{%+v}", msg.Cmd, utils.RunTime(startTime), msg.UID, res.Data)
 		//   去结算
+		SpinRecord(msg.Cmd, user, bet, res.Win, user.Balance, res.Data)
 		if res.Win > 0 {
 			user.GameEnd(res.Win)
 			// dataMap := res.Data.(game.SlotResult[game.MGResult, game.FGResult])
 			// dataMap.Balance = user.Balance
 			return conn.SendByBalance(msg.Cmd, res.Data, user.Balance)
 		}
-		SpinRecord(msg.Cmd, user, bet, res.Win, user.Balance, res.Data)
+
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
 }
