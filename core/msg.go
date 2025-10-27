@@ -15,12 +15,13 @@ type Message struct {
 }
 
 type RespMsg struct {
-	Data  any       `json:"data,omitempty"`
-	Seq   int64     `json:"seq,omitempty"` // 消息序列号
-	Code  errs.Code `json:"code,omitempty"`
-	Msg   string    `json:"msg,omitempty"`
-	Cmd   string    `json:"cmd"`
-	Trace string    `json:"trace,omitempty"` //  方便追踪错误
+	Data    any       `json:"data,omitempty"`
+	Seq     int64     `json:"seq,omitempty"` // 消息序列号
+	Code    errs.Code `json:"code,omitempty"`
+	Msg     string    `json:"msg,omitempty"`
+	Cmd     string    `json:"cmd"`
+	Trace   string    `json:"trace,omitempty"`   //  方便追踪错误
+	Balance int64     `json:"balance,omitempty"` //  余额
 }
 
 // GameResult

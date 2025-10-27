@@ -27,5 +27,6 @@ type SlotResult[M any, F any] struct {
 	MGResult MGResult[M] `json:"MGResult"` // MAIN GAME
 	FGResult FGResult[F] `json:"FGResult"` // FREE GAME
 	TotalWin int64       `json:"TotalWin"` // 总赢FG+MG
+	Balance  int64       `json:"Balance"`  // 玩家余额
 	Extra    any         `json:"Extra"`    // 额外扩展数据
 }

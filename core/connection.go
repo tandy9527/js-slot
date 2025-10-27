@@ -229,6 +229,18 @@ func (c *Connection) SendResp(cmd string, data any) error {
 	}
 	return c.SendJSON(resp)
 }
+func (c *Connection) SendByBalance(cmd string, data any, balance int64) error {
+	resp := RespMsg{
+		Data:    data,
+		Cmd:     cmd,
+		Balance: balance,
+		Code:    errs.ErrSuccess.Code,
+		Msg:     errs.ErrSuccess.Msg,
+		Seq:     c.SEQ,
+		Trace:   c.TraceID,
+	}
+	return c.SendJSON(resp)
+}
 
 // sendError 发送错误消息
 func (c *Connection) SendErr(cmd string, errs *errs.APIError) error {

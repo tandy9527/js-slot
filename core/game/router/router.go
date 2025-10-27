@@ -137,8 +137,9 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		//   去结算
 		if res.Win > 0 {
 			user.GameEnd(res.Win)
-			dataMap := res.Data.(map[string]any)
-			dataMap["balance"] = user.Balance
+			// dataMap := res.Data.(game.SlotResult[game.MGResult, game.FGResult])
+			// dataMap.Balance = user.Balance
+			return conn.SendByBalance(msg.Cmd, res.Data, user.Balance)
 		}
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
