@@ -120,7 +120,8 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Errorf("cmd:%s gameinfo not found", msg.Cmd)
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
 	}
-	if !bet(user, msg) {
+	isBet, bet := SpinBet(user, msg)
+	if !isBet {
 		return nil
 	}
 	resultCh := handler(ctx, user, gameinfo, msg)
@@ -141,20 +142,27 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 			// dataMap.Balance = user.Balance
 			return conn.SendByBalance(msg.Cmd, res.Data, user.Balance)
 		}
+		SpinRecord(msg.Cmd, user, bet, res.Win, user.Balance, res.Data)
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
 }
 
 // spin  统一下注处理
-func bet(user *core.User, msg core.Message) bool {
+func SpinBet(user *core.User, msg core.Message) (bool, int64) {
 	if msg.Cmd == consts.REQ_CMD_SPIN {
 		err := user.Bet(msg.GetInt64("bet"))
 		if err != nil {
 			user.Conn.SendErr(msg.Cmd, err)
-			return false
+			return false, 0
 		} else {
 			user.BalanceChange()
 		}
 	}
-	return true
+	return true, msg.GetInt64("bet")
+}
+
+func SpinRecord(cmd string, user *core.User, bet int64, win int64, balance int64, data any) {
+	if cmd == consts.REQ_CMD_SPIN {
+		core.SlotSpinRecord(user.UID, bet, win, balance, data, utils.CurrentTimestamp())
+	}
 }

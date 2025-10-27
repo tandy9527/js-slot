@@ -104,13 +104,13 @@ func cleanGame() {
 // PrintStartupLog 启动日志
 func PrintStartupLog() {
 	logger.Infof("=========================================================================")
-	logger.Infof(" GAME STARTED | ID: %d | NAME: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof(" GAME STARTED | ID: %d | NAME: %s| CODE: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, core.GConf.GameCode, time.Now().Format("2006-01-02 15:04:05"))
 	logger.Infof("=========================================================================")
 }
 
 // PrintShutdownLog 退出日志
 func PrintShutdownLog() {
 	logger.Infof("=========================================================================")
-	logger.Infof(" GAME EXITED | ID: %d | NAME: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof(" GAME EXITED | ID: %d | NAME: %s| CODE: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, time.Now().Format("2006-01-02 15:04:05"))
 	logger.Infof("=========================================================================")
 }

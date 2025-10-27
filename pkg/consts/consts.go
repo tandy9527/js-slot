@@ -82,3 +82,11 @@ const (
 	//  游戏在线人数
 	REDIS_GAME_CONN = "game:conn:"
 )
+
+// ------------------------------------落库 ----------------------------------
+const (
+	//  数据持久化类型-余额变化（下注，游戏结算）
+	DATA_PERSISTENT_TYPE_UPDATE = "U"
+	//  SPIN 数据
+	DATA_PERSISTENT_TYPE_SPIN = "S"
+)

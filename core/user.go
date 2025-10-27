@@ -84,17 +84,10 @@ func (u *User) Bet(bet int64) *errs.APIError {
 		//u.Conn.SendErr("", errs.ErrInsufficientBalance)
 		return errs.ErrInsufficientBalance
 	}
-	BalanceChanges(&BalanceChangeData{
-		UID:           u.UID,
-		Time:          utils.CurrentTimestamp(),
-		Amount:        bet,
-		Type:          consts.TYPE_BET,
-		BalanceBefore: balance + bet,
-		BalanceAfter:  balance,
-		GameCode:      GConf.GameCode,
-		GameID:        GConf.GameID,
-	})
+
 	u.Balance = balance
+
+	UpdataBalance(u.UID, bet, balance+bet, balance, consts.TYPE_BET, utils.CurrentTimestamp())
 	return nil
 }
 
@@ -109,17 +102,9 @@ func (u *User) GameEnd(win int64) *errs.APIError {
 	if len(resSlice) != 2 {
 		return errs.ErrInternalServerError
 	}
-	BalanceChanges(&BalanceChangeData{
-		UID:           u.UID,
-		Time:          utils.CurrentTimestamp(),
-		Amount:        win,
-		Type:          consts.TYPE_GAME_END,
-		BalanceBefore: resSlice[1].(int64),
-		BalanceAfter:  resSlice[0].(int64),
-		GameID:        GConf.GameID,
-		GameCode:      GConf.GameCode,
-	})
+
 	u.Balance = resSlice[0].(int64)
+	UpdataBalance(u.UID, win, resSlice[1].(int64), resSlice[0].(int64), consts.TYPE_GAME_END, utils.CurrentTimestamp())
 	return nil
 }
 
