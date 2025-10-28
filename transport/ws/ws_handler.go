@@ -74,7 +74,7 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 			c.SendErr("", errs.ErrDataFormatError)
 			return
 		}
-		if val, ok := dataMap["token"]; ok {
+		if val, ok := dataMap["t"]; ok {
 			token, ok := val.(string)
 			if ok {
 				login(c, token)
@@ -92,7 +92,7 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 }
 
 func auth(token, ip string) (int64, *errs.APIError) {
-	if str_tools.IsEmpty(t) {
+	if str_tools.IsEmpty(token) {
 		return -1, errs.ErrTokenNull
 	}
 	//token := str_tools.Base64Decode(t)
