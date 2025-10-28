@@ -100,13 +100,7 @@ func (g *GameRouter) Register(cmd string, handler GameHandlerFunc) {
 // HandleMessage  处理消息入口
 func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) error {
 	startTime := utils.StartTime()
-	handler, ok := g.handlers[msg.Cmd]
 	logger.Infof("req -> cmd:[%s] uid:[%d], data:{%+v}", msg.Cmd, msg.UID, msg.Data)
-
-	if !ok {
-		return conn.SendErr(msg.Cmd, errs.ErrCmdNotFound)
-	}
-
 	// login
 	if msg.Cmd == consts.REQ_CMD_LOGIN {
 		// ctx, cancel := context.WithTimeout(context.Background(), g.Timeout)
@@ -129,8 +123,12 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Infof("resp <- cmd:[%s][%d]ms, data:{%+v}", msg.Cmd, utils.RunTime(startTime), res.Data)
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
-
 	// 非 login 类型必须有 user
+	handler, ok := g.handlers[msg.Cmd]
+	if !ok {
+		return conn.SendErr(msg.Cmd, errs.ErrCmdNotFound)
+	}
+
 	manager := manager.GetGameManager()
 	if manager == nil {
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
