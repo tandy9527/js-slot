@@ -126,6 +126,7 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		if res.Err != nil {
 			return conn.SendErr(msg.Cmd, res.Err)
 		}
+		logger.Infof("resp <- cmd:[%s][%d]ms, data:{%+v}", msg.Cmd, utils.RunTime(startTime), res.Data)
 		return conn.SendResp(msg.Cmd, res.Data)
 	}
 
