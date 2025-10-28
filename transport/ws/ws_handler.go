@@ -91,11 +91,11 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 	router.Router.HandleMessage(c, m)
 }
 
-func auth(t, ip string) (int64, *errs.APIError) {
+func auth(token, ip string) (int64, *errs.APIError) {
 	if str_tools.IsEmpty(t) {
 		return -1, errs.ErrTokenNull
 	}
-	token := str_tools.Base64Decode(t)
+	//token := str_tools.Base64Decode(t)
 	secret, err := cache.GetDB("db1").Get(consts.REDIS_SLOTS_JWT_KEY)
 	if err != nil {
 		logger.Errorf("auth error: %v", err)
