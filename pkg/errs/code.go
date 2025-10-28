@@ -7,11 +7,13 @@ const (
 	Unknown             Code = 1
 	Internal            Code = 3
 	Success             Code = 200
+	ParamInvalid        Code = 400
+	MissingParameter    Code = 401 //  缺少参数
 	InternalServerError Code = 500 // 服务器错误
 	UserNotFound        Code = 501 // 用户不存在
 	PleaseLogIn         Code = 502 // 请登陆
-	ParamInvalid        Code = 400
-	MissingParameter    Code = 401 //  缺少参数
+	TokenNull           Code = 503 // token is null
+	TokenErr            Code = 504 // token err
 )
 
 // 游戏模块

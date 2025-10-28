@@ -3,20 +3,22 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
+	"time"
 
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
 	"github.com/tandy9527/js-slot/pkg/utils"
 	"github.com/tandy9527/js-util/cache"
+	"github.com/tandy9527/js-util/logger"
+	"github.com/tandy9527/js-util/tools/jwt_tools"
+	"github.com/tandy9527/js-util/tools/str_tools"
 
 	"github.com/tandy9527/js-slot/core/game/manager"
 	"github.com/tandy9527/js-slot/core/game/router"
 
 	"net/http"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/websocket"
 )
 
@@ -24,30 +26,6 @@ var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
 		return true // 允许跨域
 	},
-}
-var jwtSecret = []byte("9f2c4b6d8a1e4f5b7c9d2e3f1a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b")
-
-// Claims 定义
-type Claims struct {
-	jwt.RegisteredClaims
-	UID int64 `json:"uid"`
-}
-
-func parseToken(tokenString string) (int64, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (any, error) {
-		return jwtSecret, nil
-	})
-	if err != nil {
-		return -1, err
-	}
-	if !token.Valid {
-		return -1, nil
-	}
-	claims := token.Claims.(*Claims)
-	if claims == nil {
-		return 0, err
-	}
-	return claims.UID, nil
 }
 
 func WsHandler(w http.ResponseWriter, r *http.Request) {
@@ -70,17 +48,17 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	// manager := game.GetGameManager()
 	// manager.AddUser(user)
 	// manager.AddRoom(room)
-	sendAES(conn)
+	//sendAES(conn)
 }
 
-func sendAES(c *core.Connection) error {
-	// TODO:  后面处理
-	c.SendJSON(core.Message{
-		Cmd:  "aes",
-		Data: "ok",
-	})
-	return nil
-}
+// func sendAES(c *core.Connection) error {
+// 	// TODO:  后面处理
+// 	c.SendJSON(core.Message{
+// 		Cmd:  "aes",
+// 		Data: "ok",
+// 	})
+// 	return nil
+// }
 
 // 收到消息后的回调函数
 func onMessageHandler(c *core.Connection, msg []byte) {
@@ -113,10 +91,41 @@ func onMessageHandler(c *core.Connection, msg []byte) {
 	router.Router.HandleMessage(c, m)
 }
 
+func auth(t, ip string) (int64, *errs.APIError) {
+	if str_tools.IsEmpty(t) {
+		return -1, errs.ErrTokenNull
+	}
+	token := str_tools.Base64Decode(t)
+	secret, err := cache.GetDB("db1").Get(consts.REDIS_SLOTS_JWT_KEY)
+	if err != nil {
+		logger.Errorf("auth error: %v", err)
+		return -1, errs.ErrInternalServerError
+	}
+	if str_tools.IsEmpty(secret) {
+		secret = str_tools.RandNumStr(50, 100)
+		cache.GetDB("db1").Set(consts.REDIS_SLOTS_JWT_KEY, secret, 3*time.Hour)
+	}
+	//token
+	uid, err := jwt_tools.ParseToken(token, secret, ip)
+	if err != nil {
+		return -1, errs.ErrTokenErr
+	}
+	if uid < 0 {
+		return -1, errs.ErrTokenErr
+	}
+	return uid, nil
+
+}
+
 func login(c *core.Connection, token string) {
 	// TODO:  后面会改成各种鉴权方式
 	// GRPC 进行鉴权
-	uid, _ := strconv.ParseInt(token, 10, 64)
+	// uid, _ := strconv.ParseInt(token, 10, 64)
+	uid, err := auth(token, "")
+	if err != nil {
+		c.SendErr("", err)
+		return
+	}
 	if ok, _ := cache.GetDB("db0").Exists(utils.GetUserRedisKey(uid)); !ok {
 		c.SendErr("", errs.ErrUserNotFound)
 		return

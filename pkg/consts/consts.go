@@ -81,6 +81,10 @@ const (
 	REDIS_GAME_ONLINE = "game:online"
 	//  游戏在线人数
 	REDIS_GAME_CONN = "game:conn:"
+	// 请求slots 一次性token
+	REDIS_SLOTS_TOKEN_KEY = "slots_token_jwt:"
+	// 请求slots 一次性token -密钥
+	REDIS_SLOTS_JWT_KEY = "slots_token_jwt:secret"
 )
 
 // ------------------------------------落库 ----------------------------------

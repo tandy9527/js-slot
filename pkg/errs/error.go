@@ -26,4 +26,6 @@ var (
 	ErrInsufficientBalance = &APIError{Code: InsufficientBalance, Msg: "insufficient balance"}
 	ErrUserNotFound        = &APIError{Code: UserNotFound, Msg: "user not found"} // 未找到用户
 	ErrPleaseLogIn         = &APIError{Code: PleaseLogIn, Msg: "please log in"}   // 请登陆
+	ErrTokenNull           = &APIError{Code: TokenNull, Msg: "token is null"}     // token 为空
+	ErrTokenErr            = &APIError{Code: TokenErr, Msg: "token error"}        // token 错误
 )

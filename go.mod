@@ -4,7 +4,7 @@ go 1.23.0
 
 toolchain go1.23.11
 
-require github.com/tandy9527/js-util v1.1.1
+require github.com/tandy9527/js-util v1.1.9
 
 require (
 	github.com/gorilla/websocket v1.5.3
