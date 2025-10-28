@@ -46,6 +46,7 @@ func NewRouter(timeout time.Duration) *GameRouter {
 		Timeout:  timeout,
 	}
 	gr.Register(consts.REQ_CMD_GET_BALANCE, WrapSyncHandler(core.GetBalance))
+	//gr.Register(consts.REQ_CMD_LOGIN, WrapSyncHandler(core.Login))
 	return gr
 }
 func (g *GameRouter) GetHandler(cmd string) GameHandlerFunc {
@@ -100,12 +101,35 @@ func (g *GameRouter) Register(cmd string, handler GameHandlerFunc) {
 func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) error {
 	startTime := utils.StartTime()
 	handler, ok := g.handlers[msg.Cmd]
-	logger.Infof("req -> cmd:[%s] uid:[%d],data:{%+v}", msg.Cmd, msg.UID, msg.Data)
+	logger.Infof("req -> cmd:[%s] uid:[%d], data:{%+v}", msg.Cmd, msg.UID, msg.Data)
+
 	if !ok {
 		return conn.SendErr(msg.Cmd, errs.ErrCmdNotFound)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), g.Timeout)
-	defer cancel()
+
+	// login
+	if msg.Cmd == consts.REQ_CMD_LOGIN {
+		// ctx, cancel := context.WithTimeout(context.Background(), g.Timeout)
+		// defer cancel()
+
+		// resultCh := core.Login(conn, msg)
+		// select {
+		// case <-ctx.Done():
+		// 	return conn.SendErr(msg.Cmd, errs.ErrTimeout)
+		// case res := <-resultCh:
+		// 	if res.Err != nil {
+		// 		return conn.SendErr(msg.Cmd, res.Err)
+		// 	}
+		// 	return conn.SendResp(msg.Cmd, res.Data)
+		// }
+		res := Login(conn, msg)
+		if res.Err != nil {
+			return conn.SendErr(msg.Cmd, res.Err)
+		}
+		return conn.SendResp(msg.Cmd, res.Data)
+	}
+
+	// 非 login 类型必须有 user
 	manager := manager.GetGameManager()
 	if manager == nil {
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
@@ -115,15 +139,20 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		logger.Errorf("cmd:%s user:%d not found", msg.Cmd, msg.UID)
 		return conn.SendErr(msg.Cmd, errs.ErrPleaseLogIn)
 	}
+
 	gameinfo := user.Room.GetGameInfo()
 	if gameinfo == nil {
 		logger.Errorf("cmd:%s gameinfo not found", msg.Cmd)
 		return conn.SendErr(msg.Cmd, errs.ErrInternalServerError)
 	}
+
 	isBet, bet := SpinBet(user, msg)
 	if !isBet {
 		return nil
 	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), g.Timeout)
+	defer cancel()
 	resultCh := handler(ctx, user, gameinfo, msg)
 
 	select {
@@ -134,17 +163,15 @@ func (g *GameRouter) HandleMessage(conn *core.Connection, msg core.Message) erro
 		if res.Err != nil {
 			return conn.SendErr(msg.Cmd, res.Err)
 		}
-		logger.Infof("resp <- cmd:[%s][%d]ms, uid:[%d],data:{%+v}", msg.Cmd, utils.RunTime(startTime), msg.UID, res.Data)
-		//   去结算
+		logger.Infof("resp <- cmd:[%s][%d]ms, uid:[%d], data:{%+v}", msg.Cmd, utils.RunTime(startTime), msg.UID, res.Data)
+
+		// 结算逻辑
 		SpinRecord(msg.Cmd, user, bet, res.Win, user.Balance, res.Data)
 		if res.Win > 0 {
 			user.GameEnd(res.Win)
-			// dataMap := res.Data.(game.SlotResult[game.MGResult, game.FGResult])
-			// dataMap.Balance = user.Balance
 		}
-		SpinRecord(msg.Cmd, user, bet, res.Win, user.Balance, res.Data)
+
 		return conn.SendByBalance(msg.Cmd, res.Data, user.Balance)
-		//return conn.SendResp(msg.Cmd, res.Data)
 	}
 }
 

@@ -8,4 +8,5 @@ const (
 const (
 	REQ_CMD_SPIN        = "spin"
 	REQ_CMD_GET_BALANCE = "GetBalance" // 获取余额
+	REQ_CMD_LOGIN       = "login"
 )
