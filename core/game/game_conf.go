@@ -30,5 +30,5 @@ func LoadGameConf(path string) {
 	// 	panic(fmt.Sprintf("read config file error: %v", err))
 	// }
 	// GConf = &cfg.Game
-	GConf = tools.Loadyaml[GameConf](path)
+	GConf = &tools.Loadyaml[GameConfig](path).Game
 }
