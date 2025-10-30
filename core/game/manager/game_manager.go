@@ -8,8 +8,9 @@ import (
 
 type GameManager struct {
 	users map[int64]*core.User
+	umu   sync.RWMutex
 	rooms map[string]*core.Room
-	mu    sync.RWMutex
+	rmu   sync.RWMutex
 }
 
 var manager *GameManager
@@ -29,22 +30,22 @@ func GetGameManager() *GameManager {
 
 // 添加玩家
 func (gm *GameManager) AddUser(u *core.User) {
-	gm.mu.Lock()
-	defer gm.mu.Unlock()
+	gm.umu.Lock()
+	defer gm.umu.Unlock()
 	gm.users[u.UID] = u
 }
 
 // 获取玩家
 func (gm *GameManager) GetUser(uid int64) *core.User {
-	gm.mu.RLock()
-	defer gm.mu.RUnlock()
+	gm.umu.RLock()
+	defer gm.umu.RUnlock()
 	return gm.users[uid]
 }
 
 // 移除玩家
 func (gm *GameManager) RemoveUser(uid int64) {
-	gm.mu.Lock()
-	defer gm.mu.Unlock()
+	gm.umu.Lock()
+	defer gm.umu.Unlock()
 	delete(gm.users, uid)
 }
 
@@ -52,21 +53,21 @@ func (gm *GameManager) RemoveUser(uid int64) {
 
 // 添加房间
 func (gm *GameManager) AddRoom(r *core.Room) {
-	gm.mu.Lock()
-	defer gm.mu.Unlock()
+	gm.rmu.Lock()
+	defer gm.rmu.Unlock()
 	gm.rooms[r.ID] = r
 }
 
 // 获取房间
 func (gm *GameManager) GetRoom(id string) *core.Room {
-	gm.mu.RLock()
-	defer gm.mu.RUnlock()
+	gm.rmu.RLock()
+	defer gm.rmu.RUnlock()
 	return gm.rooms[id]
 }
 
 // 移除房间
 func (gm *GameManager) RemoveRoom(id string) {
-	gm.mu.Lock()
-	defer gm.mu.Unlock()
+	gm.rmu.Lock()
+	defer gm.rmu.Unlock()
 	delete(gm.rooms, id)
 }

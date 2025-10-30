@@ -30,7 +30,7 @@ func Login(conn *core.Connection, msg core.Message) core.GameResult {
 		cache.GetDB("db1").Set(consts.REDIS_SLOTS_JWT_KEY, secret, 3*time.Hour)
 	}
 	//token
-	uid, err := jwt_tools.ParseToken(token, secret, "")
+	uid, err := jwt_tools.ParseToken(token, secret, conn.IP)
 	if err != nil {
 		return core.GameResult{Err: errs.ErrTokenNull}
 	}
@@ -51,5 +51,5 @@ func Login(conn *core.Connection, msg core.Message) core.GameResult {
 	m := manager.GetGameManager()
 	m.AddUser(user)
 	m.AddRoom(room)
-	return core.GameResult{Data: "login success"}
+	return core.GameResult{Data: map[string]string{"S": "login success"}}
 }

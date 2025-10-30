@@ -26,8 +26,8 @@ var srv *http.Server
 // Start 启动游戏服务
 func Start() error {
 
-	port := fmt.Sprintf(":%d", core.GConf.Port)
-	logger.Infof("start server Game: %v , port: %d，router:%v", core.GConf.GameCode, core.GConf.Port, core.GConf.RouterName)
+	port := fmt.Sprintf(":%d", game.GConf.Port)
+	logger.Infof("start server Game: %v , port: %d，router:%v", game.GConf.GameCode, game.GConf.Port, game.GConf.RouterName)
 
 	// 配置 HTTP Server
 	srv = &http.Server{
@@ -48,7 +48,7 @@ func Start() error {
 
 // setupRouter 配置路由
 func setupRouter() http.Handler {
-	router := core.GConf.RouterName
+	router := game.GConf.RouterName
 	if utils.IsEmpty(router) {
 		router = "game"
 	}
@@ -80,8 +80,8 @@ func cleanup() {
 
 // Init 初始化配置
 func init() {
-	core.LoadGameConf("config/game.yaml")
-	logger.LoggerInit(core.GConf.LogPath, 50, 30, 100, true)
+	game.LoadGameConf("config/game.yaml")
+	logger.LoggerInit(game.GConf.LogPath, 50, 30, 100, true)
 	PrintStartupLog()
 	cache.LoadRedis("config/redis.yaml")
 
@@ -96,21 +96,21 @@ func init() {
 func cleanGame() {
 	logger.Info("clean game")
 	// 在线人数
-	cache.GetDB("db2").ZRem(consts.REDIS_GAME_ONLINE, strconv.Itoa(core.GConf.GameID))
+	cache.GetDB("db2").ZRem(consts.REDIS_GAME_ONLINE, strconv.Itoa(game.GConf.GameID))
 	// 游戏在线人
 	cache.GetDB("db2").Del(consts.REDIS_GAME_CONN)
 }
 
 // PrintStartupLog 启动日志
 func PrintStartupLog() {
-	logger.Infof("=========================================================================")
-	logger.Infof(" GAME STARTED | ID: %d | NAME: %s| CODE: %s | MODE: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, core.GConf.GameCode, core.GConf.Mode, time.Now().Format("2006-01-02 15:04:05"))
-	logger.Infof("=========================================================================")
+	logger.Infof("======================================================================================")
+	logger.Infof(" GAME STARTED | ID: %d | NAME: %s| CODE: %s | MODE: %s | TIME: %s", game.GConf.GameID, game.GConf.GameName, game.GConf.GameCode, game.GConf.Mode, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof("======================================================================================")
 }
 
 // PrintShutdownLog 退出日志
 func PrintShutdownLog() {
-	logger.Infof("=========================================================================")
-	logger.Infof(" GAME EXITED | ID: %d | NAME: %s| CODE: %s | MODE: %s | TIME: %s", core.GConf.GameID, core.GConf.GameName, core.GConf.GameCode, core.GConf.Mode, time.Now().Format("2006-01-02 15:04:05"))
-	logger.Infof("=========================================================================")
+	logger.Infof("======================================================================================")
+	logger.Infof(" GAME EXITED | ID: %d | NAME: %s| CODE: %s | MODE: %s | TIME: %s", game.GConf.GameID, game.GConf.GameName, game.GConf.GameCode, game.GConf.Mode, time.Now().Format("2006-01-02 15:04:05"))
+	logger.Infof("======================================================================================")
 }

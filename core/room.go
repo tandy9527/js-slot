@@ -9,7 +9,7 @@ import (
 type Room struct {
 	ID       string
 	Users    map[int64]*User
-	Status   string // waiting / playing
+	Status   int //0-等待中 1-游戏中
 	mu       sync.RWMutex
 	gameInfo *game.GameInfo //  数值配置
 }
@@ -24,7 +24,7 @@ func NewRoom(id string) *Room {
 	return &Room{
 		ID:       id,
 		Users:    make(map[int64]*User),
-		Status:   "waiting",
+		Status:   0,
 		gameInfo: game.GetGameInfo(),
 	}
 }
@@ -69,13 +69,13 @@ func (r *Room) UserCount() int {
 	return len(r.Users)
 }
 
-func (r *Room) SetStatus(status string) {
+func (r *Room) SetStatus(status int) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.Status = status
 }
 
-func (r *Room) GetStatus() string {
+func (r *Room) GetStatus() int {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 	return r.Status

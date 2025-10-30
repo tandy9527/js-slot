@@ -54,7 +54,7 @@ func (u *User) SendResp(data any) {
 func (u *User) UpdateBalance(amount int64) *errs.APIError {
 	u.mu.Lock()
 	defer u.mu.Unlock()
-	result, err := cache.GetDB("db0").ExecLua(scripts.RechargeLua, []string{u.Session}, amount)
+	result, err := cache.GetDB(cache.DB0).ExecLua(scripts.RechargeLua, []string{u.Session}, amount)
 	if err != nil || result == nil {
 		return errs.ErrInternalServerError
 	}
@@ -70,7 +70,7 @@ func (u *User) UpdateBalance(amount int64) *errs.APIError {
 func (u *User) Bet(bet int64) *errs.APIError {
 	u.mu.Lock()
 	defer u.mu.Unlock()
-	result, err := cache.GetDB("db0").ExecLua(scripts.BetLua, []string{u.Session}, bet)
+	result, err := cache.GetDB(cache.DB0).ExecLua(scripts.BetLua, []string{u.Session}, bet)
 	if err != nil {
 		return errs.ErrInternalServerError
 	}
@@ -94,7 +94,7 @@ func (u *User) Bet(bet int64) *errs.APIError {
 func (u *User) GameEnd(win int64) *errs.APIError {
 	u.mu.Lock()
 	defer u.mu.Unlock()
-	result, err := cache.GetDB("db0").ExecLua(scripts.RechargeLua, []string{u.Session}, win)
+	result, err := cache.GetDB(cache.DB0).ExecLua(scripts.RechargeLua, []string{u.Session}, win)
 	if err != nil || result == nil {
 		return errs.ErrInternalServerError
 	}
@@ -112,7 +112,7 @@ func (u *User) GameEnd(win int64) *errs.APIError {
 func (u *User) BalanceChange() int64 {
 	u.mu.Lock()
 	defer u.mu.Unlock()
-	if balanceStr, err := cache.GetDB("db0").HGet(u.Session, "balance"); err == nil {
+	if balanceStr, err := cache.GetDB(cache.DB0).HGet(u.Session, "balance"); err == nil {
 		u.Balance, _ = strconv.ParseInt(balanceStr, 10, 64)
 	}
 	u.SendResp(RespMsg{

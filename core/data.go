@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
+	"github.com/tandy9527/js-slot/core/game"
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-util/cache"
 	"github.com/tandy9527/js-util/logger"
@@ -70,8 +71,8 @@ func UpdataBalance(uid int64, amount int64, balanceBefore int64, blanceAfter int
 		BalanceAfter:  blanceAfter,
 		Ctime:         time,
 		Type:          typ,
-		GameCode:      GConf.GameCode,
-		GameID:        GConf.GameID,
+		GameCode:      game.GConf.GameCode,
+		GameID:        game.GConf.GameID,
 	}
 	Persistent(Data{
 		Data: d,
@@ -82,8 +83,8 @@ func UpdataBalance(uid int64, amount int64, balanceBefore int64, blanceAfter int
 func SlotSpinRecord(uid int64, bet int64, win int64, balance int64, data any, time int64) {
 	d := GameLogData{
 		UID:      uid,
-		GameCode: GConf.GameCode,
-		GameID:   GConf.GameID,
+		GameCode: game.GConf.GameCode,
+		GameID:   game.GConf.GameID,
 		Bet:      bet,
 		Win:      win,
 		Balance:  balance,

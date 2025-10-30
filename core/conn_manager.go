@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/tandy9527/js-slot/core/game"
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-util/cache"
 )
@@ -45,7 +46,7 @@ func (m *ConnManager) Add(conn *Connection) {
 			c.OnClose()
 		}(old)
 	} else {
-		cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, 1, strconv.Itoa(GConf.GameID))
+		cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, 1, strconv.Itoa(game.GConf.GameID))
 	}
 }
 

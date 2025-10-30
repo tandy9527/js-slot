@@ -1,10 +1,7 @@
-package core
+package game
 
 import (
-	"fmt"
-	"os"
-
-	"gopkg.in/yaml.v3"
+	"github.com/tandy9527/js-util/tools"
 )
 
 type GameConf struct {
@@ -24,13 +21,14 @@ type GameConfig struct {
 var GConf *GameConf
 
 func LoadGameConf(path string) {
-	file, err := os.ReadFile(path)
-	if err != nil {
-		panic(fmt.Sprintf("read config file error: %v", err))
-	}
-	var cfg GameConfig
-	if err := yaml.Unmarshal(file, &cfg); err != nil {
-		panic(fmt.Sprintf("read config file error: %v", err))
-	}
-	GConf = &cfg.Game
+	// file, err := os.ReadFile(path)
+	// if err != nil {
+	// 	panic(fmt.Sprintf("read config file error: %v", err))
+	// }
+	// var cfg GameConfig
+	// if err := yaml.Unmarshal(file, &cfg); err != nil {
+	// 	panic(fmt.Sprintf("read config file error: %v", err))
+	// }
+	// GConf = &cfg.Game
+	GConf = tools.Loadyaml[GameConf](path)
 }

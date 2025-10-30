@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/tandy9527/js-slot/core/game"
 	"github.com/tandy9527/js-slot/pkg/consts"
 	"github.com/tandy9527/js-slot/pkg/errs"
 	"github.com/tandy9527/js-slot/pkg/scripts"
@@ -21,6 +22,7 @@ type Connection struct {
 	SEQ     int64 // 每条消息的唯一ID，自增
 	UID     int64
 	Ws      *websocket.Conn
+	IP      string
 	TraceID string // 方便出问题日志
 
 	sendChan  chan []byte
@@ -40,9 +42,10 @@ type Connection struct {
 // )
 
 // NewConnection 新建连接
-func New(ws *websocket.Conn) *Connection {
+func New(ws *websocket.Conn, ip string) *Connection {
 	c := &Connection{
 		Ws:           ws,
+		IP:           ip,
 		TraceID:      utils.NewTraceID(),
 		SEQ:          1,
 		sendChan:     make(chan []byte, 512),
@@ -110,7 +113,7 @@ func (c *Connection) OnClose() {
 		close(c.sendChan) // 停止写循环
 		_ = c.Ws.Close()  // 关闭 websocke
 		GlobalConnManager().Remove(c.UID)
-		cache.GetDB("db2").ExecLua(scripts.ZincrBy, []string{consts.REDIS_GAME_ONLINE, strconv.Itoa(GConf.GameID)}, -1)
+		cache.GetDB(cache.DB2).ExecLua(scripts.ZincrBy, []string{consts.REDIS_GAME_ONLINE, strconv.Itoa(game.GConf.GameID)}, -1)
 		// cache.GetDB("db2").ZIncrBy(consts.REDIS_GAME_ONLINE, -1, strconv.Itoa(GConf.GameID))
 	})
 

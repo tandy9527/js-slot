@@ -28,6 +28,11 @@ const (
 	//  不可见
 	GAME_STATUS_OFFLINE = 1
 )
+const (
+	MODE_DEV  = "dev" // 开发模式,
+	MODE_TEST = "test"
+	MODE_PROD = "prod" // 线上模式
+)
 
 // HTTP 头常量
 const (
@@ -85,6 +90,10 @@ const (
 	REDIS_SLOTS_TOKEN_KEY = "slots_token_jwt:"
 	// 请求slots 一次性token -密钥
 	REDIS_SLOTS_JWT_KEY = "slots_token_jwt:secret"
+	// 游戏RTP key hash   game_rtp:game_id:rtp  game_rtp:S1001:98
+	REDIS_GAME_RTP_DATA = "game_rtp:%s:%s"
+	// 游戏当前使用的RTP key string  game_rtp:game_id game_rtp:S1001
+	REDIS_GAME_RTP = "game_rtp:%s"
 )
 
 // ------------------------------------落库 ----------------------------------

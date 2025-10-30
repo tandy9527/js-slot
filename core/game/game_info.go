@@ -2,9 +2,9 @@ package game
 
 import (
 	"fmt"
-	"math/rand"
 
 	"github.com/tandy9527/js-util/tools"
+	"github.com/tandy9527/js-util/tools/randEx"
 )
 
 var GIS *GameInfos
@@ -21,7 +21,8 @@ type GameInfos struct {
 type GameInfo struct {
 	GameID   string         `yaml:"game_id"`   // 游戏id -必须
 	GameName string         `yaml:"game_name"` // 游戏名称 -必须
-	ProbID   string         `yaml:"ProbId"`    // 概率id-会根据该id读取不同的概率配置 -必须
+	GameCode string         `yaml:"game_code"` // 游戏code
+	ProbID   string         `yaml:"prob_id"`   // 概率id-会根据该id读取不同的概率配置 -必须
 	Extra    map[string]any `yaml:"extra"`     // 扩展字段
 }
 
@@ -44,7 +45,7 @@ func GetGameInfo() *GameInfo {
 	if len(GIS.GameInfos) == 0 {
 		panic("no GameInfo available")
 	}
-	idx := rand.Intn(len(GIS.GameInfos))
+	idx := randEx.RandInt(len(GIS.GameInfos))
 	return &GIS.GameInfos[idx]
 }
 

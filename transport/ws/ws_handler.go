@@ -5,6 +5,7 @@ import (
 
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-util/tools/str_tools"
 
 	"github.com/tandy9527/js-slot/core/game/router"
 
@@ -28,7 +29,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// uidInt, _ := strconv.ParseInt(uid, 10, 64)
-	conn := core.New(wsConn)
+	conn := core.New(wsConn, str_tools.GetRealIP(r))
 	// 连接建立后，启动读写协程
 	go conn.ReadPump(onMessageHandler, onCloseHandler)
 	go conn.WritePump()
