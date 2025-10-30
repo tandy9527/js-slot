@@ -1,11 +1,5 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/tandy9527/js-slot/core/game"
-)
-
 func main() {
 	//game.GlobalManager()
 
@@ -22,11 +16,11 @@ func main() {
 	// 	logger.Errorf("server error: %v", err)
 	// }
 	// server.Start()
-	game.LoadGameSetting("config/game_setting.yaml")
-	fmt.Println(game.GSetting.GetString("test", "test2"))
-	game.LoadGameConfig("config/game_info.yaml")
-	fmt.Println(game.GetGameInfo().GetInt("MaxOdds"))
-	fmt.Println(game.GIS.GameInfos[0].GameID)
+	// game.LoadGameSetting("config/game_setting.yaml")
+	// fmt.Println(game.GSetting.GetString("test", "test2"))
+	// game.LoadGameConfig("config/game_info.yaml")
+	// fmt.Println(game.GetGameInfo().GetInt("MaxOdds"))
+	// fmt.Println(game.GIS.GameInfos[0].GameID)
 	// fmt.Println(game.GSetting.GsStringSlice("test2", "test2"))
 }
 
