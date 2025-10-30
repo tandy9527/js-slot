@@ -2,9 +2,11 @@ package ws
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/tandy9527/js-slot/core"
 	"github.com/tandy9527/js-slot/pkg/errs"
+	"github.com/tandy9527/js-util/logger"
 	"github.com/tandy9527/js-util/tools/str_tools"
 
 	"github.com/tandy9527/js-slot/core/game/router"
@@ -29,7 +31,9 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// uidInt, _ := strconv.ParseInt(uid, 10, 64)
-	conn := core.New(wsConn, str_tools.GetRealIP(r))
+	ip := str_tools.GetRealIP(r)
+	logger.Infof(fmt.Sprintf("------ip:%s", ip))
+	conn := core.New(wsConn, ip)
 	// 连接建立后，启动读写协程
 	go conn.ReadPump(onMessageHandler, onCloseHandler)
 	go conn.WritePump()
